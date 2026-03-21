@@ -1,0 +1,12 @@
+.next
+node_modules
+.turbo
+.env
+.env.local
+.env.production
+coverage
+playwright-report
+test-results
+dist
+drizzle/meta/_journal.json
+
