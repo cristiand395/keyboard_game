@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: sh -c "mkdir -p /app/node_modules && if [ ! -d /app/node_modules/next ]; then npm install; fi && npm run dev -- --hostname 0.0.0.0"
     ports:
       - "3000:3000"
     env_file:
@@ -17,8 +18,8 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/.next
+      - ./node_modules:/app/node_modules
+      - ./.next:/app/.next
 
   postgres:
     image: postgres:16-alpine
@@ -38,4 +39,3 @@ services:
 
 volumes:
   postgres-data:
-
