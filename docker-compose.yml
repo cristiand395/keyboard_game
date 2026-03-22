@@ -1,9 +1,10 @@
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: sh -c "mkdir -p /app/node_modules && if [ ! -d /app/node_modules/next ]; then npm install; fi && npm run dev -- --hostname 0.0.0.0"
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "tail -f /dev/null"
+    stdin_open: true
+    tty: true
     ports:
       - "3000:3000"
     env_file:
@@ -18,13 +19,11 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
-      - ./node_modules:/app/node_modules
-      - ./.next:/app/.next
+      - node_modules:/app/node_modules
+      - next_data:/app/.next
 
   postgres:
     image: postgres:16-alpine
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -39,3 +38,5 @@ services:
 
 volumes:
   postgres-data:
+  node_modules:
+  next_data:
