@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { attempts, levels, userLevelProgress, userStatsDaily, users, verificationTokens } from "@/db/schema";
@@ -74,13 +75,15 @@ export async function loginUserAction(
       redirect: false,
     });
     revalidatePath("/progreso");
-    return { ok: true, message: "Has entrado correctamente." };
+    // No devolvemos nada, redirigimos directamente
   } catch (error) {
     if (error instanceof Error && error.message.includes("EMAIL_NOT_VERIFIED")) {
       return { ok: false, message: "Tu correo no ha sido verificado. Revisa tu bandeja de entrada." };
     }
     return { ok: false, message: "Credenciales invalidas." };
   }
+  
+  redirect("/progreso");
 }
 
 export async function verifyEmailAction(token: string): Promise<ActionState> {

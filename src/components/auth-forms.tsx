@@ -64,7 +64,16 @@ export function RegisterForm() {
       >
         {isPending ? "Creando..." : "Crear cuenta"}
       </Button>
-      {state.message ? <p className="text-sm text-center text-indigo-600 bg-indigo-50 p-3 rounded-xl border border-indigo-100">{state.message}</p> : null}
+
+      {state.message ? (
+        <p className={`text-sm text-center p-3 rounded-xl border transition-colors ${
+          state.ok 
+            ? "text-emerald-600 bg-emerald-50 border-emerald-100" 
+            : "text-indigo-600 bg-indigo-50 border-indigo-100"
+        }`}>
+          {state.message}
+        </p>
+      ) : null}
       
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>
@@ -94,7 +103,16 @@ export function LoginForm() {
       <Button className="w-full font-semibold" type="submit" disabled={isPending}>
         {isPending ? "Entrando..." : "Entrar"}
       </Button>
-      {state.message ? <p className="text-sm text-center text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-100">{state.message}</p> : null}
+
+      {state.message ? (
+        <p className={`text-sm text-center p-3 rounded-xl border transition-colors ${
+          state.ok 
+            ? "text-emerald-600 bg-emerald-50 border-emerald-100" 
+            : "text-rose-600 bg-rose-50 border-rose-100"
+        }`}>
+          {state.message}
+        </p>
+      ) : null}
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>

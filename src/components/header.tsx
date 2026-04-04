@@ -44,7 +44,7 @@ export async function Header() {
             </>
           ) : (
             <Button asChild size="sm">
-              <Link href="/acceder">Guardar progreso</Link>
+              <Link href="/acceder">Iniciar sesión</Link>
             </Button>
           )}
         </div>
