@@ -29,7 +29,6 @@ export async function Header() {
             <>
               <div className="hidden text-right sm:block">
                 <p className="text-sm font-semibold">{session.user.name ?? session.user.email}</p>
-                <p className="text-xs text-muted-foreground">Tu progreso se guarda</p>
               </div>
               <form
                 action={async () => {

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { TypingGame } from "@/components/typing-game";
 import { getCachedSession } from "@/lib/auth";
-import { getAttemptsForUserByLevel, getLevelBySlug } from "@/lib/data";
+import { getAttemptsForUserByLevel, getLevelBySlug, getTracksWithLevels } from "@/lib/data";
 
 export default async function LevelPage({ params }: { params: Promise<{ slug: string }> }) {
   const [{ slug }, session] = await Promise.all([params, getCachedSession()]);
@@ -12,7 +12,14 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
     notFound();
   }
 
-  const history = session?.user?.id ? await getAttemptsForUserByLevel(session.user.id, level.id) : [];
+  const [history, tracks] = await Promise.all([
+    session?.user?.id ? getAttemptsForUserByLevel(session.user.id, level.id) : Promise.resolve([]),
+    getTracksWithLevels(),
+  ]);
+
+  const allLevels = tracks.flatMap((t) => t.levels);
+  const currentIndex = allLevels.findIndex((l) => l.id === level.id);
+  const nextLevelSlug = allLevels[currentIndex + 1]?.slug;
 
   return (
     <div className="flex min-h-screen flex-col bg-[#e0e7ff]/30">
@@ -31,6 +38,7 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
         isAuthenticated={Boolean(session?.user)}
         userName={session?.user?.name ?? session?.user?.email ?? "Invitado"}
         history={history}
+        nextLevelSlug={nextLevelSlug}
       />
     </div>
   );

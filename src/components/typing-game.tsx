@@ -39,6 +39,7 @@ type TypingGameProps = {
     passed: boolean;
     createdAt: Date;
   }>;
+  nextLevelSlug?: string;
 };
 
 type KeyboardKey = {
@@ -247,6 +248,7 @@ export function TypingGame({
   isAuthenticated,
   userName = "Cristian",
   history,
+  nextLevelSlug,
 }: TypingGameProps) {
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -254,6 +256,7 @@ export function TypingGame({
   const [finishedResult, setFinishedResult] = useState<LevelResult | null>(null);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [pressedKeyCode, setPressedKeyCode] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(true);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const clearPressedKeyTimeoutRef = useRef<number | null>(null);
@@ -275,6 +278,16 @@ export function TypingGame({
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = () => {
+      if (!isFocused && !finishedResult) {
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [finishedResult, isFocused]);
 
   useEffect(() => {
     return () => {
@@ -336,7 +349,6 @@ export function TypingGame({
             <BarChart2 className="size-5" />
             <Settings className="size-5 cursor-not-allowed opacity-30" />
           </div>
-          <div className="font-semibold text-slate-700">{userName}</div>
         </div>
       </header>
 
@@ -357,9 +369,20 @@ export function TypingGame({
         <div className="w-full max-w-6xl space-y-12">
           {/* Main Typing Surface */}
           <div
-            className="group relative cursor-text"
+            className={`group relative cursor-text transition-all duration-300 ${!isFocused && !finishedResult ? "opacity-40 scale-[0.98]" : "opacity-100 scale-100"}`}
             onClick={() => inputRef.current?.focus()}
           >
+            {!isFocused && !finishedResult && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center">
+                  <div className="flex flex-col items-center gap-4 rounded-3xl bg-white/80 p-8 shadow-2xl backdrop-blur-md border border-slate-100 animate-in fade-in zoom-in duration-300">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg animate-bounce">
+                       <Keyboard className="size-6" />
+                    </div>
+                    <p className="text-xl font-bold tracking-tight text-slate-800">Clica aquí para empezar</p>
+                    <p className="text-sm text-slate-500 font-medium tracking-wide uppercase">O pulsa cualquier tecla</p>
+                  </div>
+              </div>
+            )}
 
             <div className="relative z-10 font-mono text-[2.75rem] leading-[1.6] tracking-tight text-slate-400 md:text-[3.5rem]">
               <div className="whitespace-pre-wrap break-words">
@@ -395,6 +418,8 @@ export function TypingGame({
               value={typedText}
               spellCheck={false}
               autoFocus
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               onChange={(event) => {
                 const startedNow = startedAt ?? Date.now();
                 if (!startedAt) {
@@ -467,6 +492,7 @@ export function TypingGame({
                   <Button
                     size="lg"
                     className="h-14 px-8 text-lg"
+                    variant="outline"
                     onClick={() => {
                       setTypedText("");
                       setStartedAt(null);
@@ -478,8 +504,13 @@ export function TypingGame({
                   >
                     Repetir Intento
                   </Button>
-                  <Button variant="outline" size="lg" className="h-14 px-8 text-lg" asChild>
-                    <a href="/retos">Ver otros retos</a>
+                  {nextLevelSlug && finishedResult?.passed && (
+                    <Button size="lg" className="h-14 bg-emerald-600 px-8 text-lg hover:bg-emerald-700" asChild>
+                      <Link href={`/retos/${nextLevelSlug}`}>Siguiente reto</Link>
+                    </Button>
+                  )}
+                  <Button variant="ghost" size="lg" className="h-14 px-8 text-lg" asChild>
+                    <a href="/retos">Volver a retos</a>
                   </Button>
                 </div>
               </CardContent>
@@ -488,7 +519,7 @@ export function TypingGame({
             <div className="space-y-6">
               <Card className="border-none shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-lg">Tu historial</CardTitle>
+                  <CardTitle className="text-lg">Tu historial en {title}</CardTitle>
                 </CardHeader>
                 <CardContent className="px-2 pb-6">
                   {history.length === 0 ? (
