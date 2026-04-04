@@ -2,7 +2,17 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { Clock3, Crosshair, Timer, TriangleAlert } from "lucide-react";
+import {
+  BarChart2,
+  Clock3,
+  Crosshair,
+  Keyboard,
+  RotateCcw,
+  Settings,
+  Timer,
+  TriangleAlert,
+  Volume2,
+} from "lucide-react";
 import { saveAttemptAction } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +28,15 @@ type TypingGameProps = {
   targetText: string;
   target: LevelTarget;
   isAuthenticated: boolean;
+  userName?: string;
+  history: Array<{
+    id: string;
+    wpm: number;
+    accuracy: number;
+    stars: number;
+    passed: boolean;
+    createdAt: Date;
+  }>;
 };
 
 type KeyboardKey = {
@@ -224,6 +243,8 @@ export function TypingGame({
   targetText,
   target,
   isAuthenticated,
+  userName = "Cristian",
+  history,
 }: TypingGameProps) {
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -281,60 +302,97 @@ export function TypingGame({
   }, [elapsedPreviewMs, levelSlug, startedAt, target, targetText, typedText]);
 
   return (
-    <div className="space-y-6">
-      <Card className="overflow-hidden">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge>{title}</Badge>
-            <span className="text-sm text-muted-foreground">{description}</span>
-          </div>
-          <CardTitle className="text-3xl">Escribe siguiendo el texto y corrige tu ritmo en tiempo real</CardTitle>
-          <CardDescription>
-            Cada letra cambia al instante segun acierto o error. El cronometro corre desde la primera pulsacion.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="grid gap-3 md:grid-cols-4">
-            <MetricChip icon={<Timer className="size-4" />} label="Tiempo" value={formatDuration((finishedResult ?? currentMetrics)?.elapsedMs ?? 0)} />
-            <MetricChip icon={<Crosshair className="size-4" />} label="Precision" value={formatPercentage((finishedResult ?? currentMetrics)?.accuracy ?? 0)} />
-            <MetricChip icon={<Clock3 className="size-4" />} label="WPM" value={String((finishedResult ?? currentMetrics)?.wpm ?? 0)} />
-            <MetricChip icon={<TriangleAlert className="size-4" />} label="Errores" value={String(liveStats.errorCount)} />
-          </div>
-          <Progress value={progress} />
+    <div className="flex min-h-screen flex-col font-sans">
+      {/* Immersive Header */}
+      <header className="flex items-center justify-between border-b border-slate-200 bg-white/80 px-6 py-3 backdrop-blur-md">
+        <h2 className="text-lg font-semibold text-slate-700">{title}</h2>
+        <div className="flex items-center gap-6 text-slate-400">
+          <button
+            onClick={() => {
+              setTypedText("");
+              setStartedAt(null);
+              setElapsedPreviewMs(0);
+              setFinishedResult(null);
+              setServerMessage(null);
+              inputRef.current?.focus();
+            }}
+            className="transition-colors hover:text-primary"
+            title="Reiniciar"
+          >
+            <RotateCcw className="size-5" />
+          </button>
+          <Keyboard className="size-5 cursor-not-allowed opacity-30" />
+          <Volume2 className="size-5 cursor-not-allowed opacity-30" />
+          <BarChart2 className="size-5" />
+          <Settings className="size-5 cursor-not-allowed opacity-30" />
+        </div>
+        <div className="font-semibold text-slate-700">{userName}</div>
+      </header>
+
+      <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 pt-12 pb-24">
+        {/* Background Decorations */}
+        <div className="pointer-events-none absolute bottom-12 left-12 opacity-40">
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="60" fill="url(#paint0_radial_decoration)" />
+            <defs>
+              <radialGradient id="paint0_radial_decoration" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 60) rotate(90) scale(60)">
+                <stop stopColor="#6366f1" stopOpacity="0.2" />
+                <stop offset="1" stopColor="#6366f1" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div className="w-full max-w-6xl space-y-12">
+          {/* Main Typing Surface */}
           <div
-            className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-[linear-gradient(180deg,rgba(240,245,255,0.95),rgba(232,238,250,0.95))] p-6 md:p-8"
+            className="group relative cursor-text"
             onClick={() => inputRef.current?.focus()}
           >
-            <div className="pointer-events-none absolute right-8 top-6 hidden rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 md:block">
-              clic para seguir escribiendo
-            </div>
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="rounded-full bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                linea de enfoque
+            {!startedAt && !finishedResult && (
+              <div className="absolute -left-20 top-1/2 -translate-y-1/2 rounded-lg bg-indigo-500 px-3 py-6 text-[10px] font-bold leading-none tracking-widest text-white uppercase [writing-mode:vertical-lr]">
+                START TYPING
               </div>
-              <div className="text-sm text-slate-500">
-                {typedText.length}/{targetText.length} caracteres
+            )}
+
+            <div className="relative z-10 font-mono text-[2.75rem] leading-[1.6] tracking-tight text-slate-400 md:text-[3.5rem]">
+              <div className="whitespace-pre-wrap break-words">
+                {targetText.split("").map((char, index) => {
+                  const typedChar = typedText[index];
+                  const isActive = index === typedText.length && !finishedResult;
+                  let className = "transition-all duration-75";
+
+                  if (typedChar === undefined) {
+                    className += " text-slate-300";
+                  } else if (typedChar === char) {
+                    className += " text-slate-600";
+                  } else {
+                    className += " text-rose-500 bg-rose-50";
+                  }
+
+                  if (isActive) {
+                    className += " border-b-4 border-indigo-500 ring-2 ring-indigo-500 ring-offset-4 rounded-sm";
+                  }
+
+                  return (
+                    <span key={index} className={className}>
+                      {renderCharacter(char)}
+                    </span>
+                  );
+                })}
               </div>
             </div>
-            <div className="typing-focus-line relative max-w-5xl overflow-hidden rounded-[28px] border border-white/60 bg-white/40 px-4 py-5 md:px-6 md:py-6">
-              <div className="typing-surface whitespace-pre-wrap break-words font-mono text-[2rem] leading-[1.95] tracking-[0.08em] text-slate-700 md:text-[3rem] md:leading-[1.85]">
-                {renderTargetText(focusWindow.text, typedText.slice(focusWindow.start, focusWindow.end), focusWindow.start)}
-              </div>
-            </div>
+
             <textarea
               ref={inputRef}
-              className="pointer-events-none absolute inset-0 h-full w-full resize-none opacity-0 outline-none"
+              className="absolute inset-0 h-full w-full resize-none opacity-0 outline-none"
               value={typedText}
               spellCheck={false}
-              autoCapitalize="none"
-              autoCorrect="off"
-              aria-label="Campo de mecanografia"
-              placeholder="Empieza a escribir aqui..."
+              autoFocus
               onChange={(event) => {
                 const startedNow = startedAt ?? Date.now();
                 if (!startedAt) {
                   setStartedAt(startedNow);
-                  setElapsedPreviewMs(0);
                 }
 
                 const nextValue = event.target.value.slice(0, targetText.length);
@@ -344,7 +402,6 @@ export function TypingGame({
                   const elapsedMs = Date.now() - startedNow;
                   const nextResult = buildLevelResult(levelSlug, targetText, nextValue, elapsedMs, target);
                   setFinishedResult(nextResult);
-                  setElapsedPreviewMs(elapsedMs);
 
                   startTransition(async () => {
                     const response = await saveAttemptAction({
@@ -356,85 +413,119 @@ export function TypingGame({
                   });
                 }
               }}
-              onKeyDown={(event) => {
-                setPressedKeyCode(event.code);
-
-                if (clearPressedKeyTimeoutRef.current) {
-                  window.clearTimeout(clearPressedKeyTimeoutRef.current);
-                }
-
-                clearPressedKeyTimeoutRef.current = window.setTimeout(() => {
-                  setPressedKeyCode(null);
-                }, 180);
-              }}
             />
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <LiveStat label="Caracteres correctos" value={String(liveStats.correctChars)} />
-            <LiveStat label="Caracteres pendientes" value={String(liveStats.remainingChars)} />
-            <LiveStat label="Estado" value={finishedResult ? (finishedResult.passed ? "Completado" : "Reintentar") : "En curso"} />
-          </div>
-          <TypingKeyboard expectedKeyCodes={expectedKeyCodes} pressedKeyCode={pressedKeyCode} />
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setTypedText("");
-                setStartedAt(null);
-                setElapsedPreviewMs(0);
-                setFinishedResult(null);
-                setServerMessage(null);
-                inputRef.current?.focus();
-              }}
-            >
-              Reiniciar intento
-            </Button>
-            {!isAuthenticated ? (
-              <p className="self-center text-sm text-muted-foreground">
-                Puedes jugar ya. Registra tu cuenta para guardar estrellas y progreso.
-              </p>
-            ) : null}
-          </div>
-        </CardContent>
-      </Card>
 
-      {finishedResult ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Panel del intento</CardTitle>
-            <CardDescription>Busca una cadencia estable: primero precisión, luego velocidad.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="grid gap-3 md:grid-cols-4">
-              <Metric label="Precision" value={formatPercentage(finishedResult.accuracy)} />
-              <Metric label="WPM" value={String(finishedResult.wpm)} />
-              <Metric label="Errores" value={String(finishedResult.errorCount)} />
-              <Metric label="Tiempo" value={formatDuration(finishedResult.elapsedMs)} />
+          {!finishedResult && startedAt && (
+            <div className="flex items-center justify-center gap-12 font-mono text-sm tracking-widest text-slate-400 uppercase">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[10px] opacity-60">Accuracy</span>
+                <span className="text-xl font-bold text-slate-600">{formatPercentage(currentMetrics?.accuracy ?? 0)}</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[10px] opacity-60">WPM</span>
+                <span className="text-xl font-bold text-slate-600">{currentMetrics?.wpm ?? 0}</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[10px] opacity-60">Time</span>
+                <span className="text-xl font-bold text-slate-600">{formatDuration(elapsedPreviewMs)}</span>
+              </div>
             </div>
-            <div className="rounded-[24px] bg-secondary p-4">
-              <p className="text-sm font-semibold">Objetivos del nivel</p>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                <li>Accuracy minima: {target.minAccuracy}%</li>
-                <li>Bronce: {target.bronzeWpm} WPM</li>
-                <li>Plata: {target.silverWpm} WPM</li>
-                <li>Oro: {target.goldWpm} WPM</li>
-              </ul>
+          )}
+        </div>
+      </div>
+
+      {/* Result Overlay */}
+      {finishedResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-indigo-950/20 p-6 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
+          <div className="grid w-full max-w-5xl gap-6 md:grid-cols-[1fr_350px]">
+            <Card className="border-none shadow-2xl">
+              <CardHeader className="border-b bg-slate-50/50 pb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-2xl">Reto completado</CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                  </div>
+                  <div className="text-4xl font-black text-indigo-600">{finishedResult.stars} ⭐</div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-8 p-8">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <BigMetric label="Velocidad (WPM)" value={String(finishedResult.wpm)} color="text-indigo-600" />
+                  <BigMetric label="Precisión" value={formatPercentage(finishedResult.accuracy)} color="text-emerald-600" />
+                  <BigMetric label="Correctos" value={String(liveStats.correctChars)} />
+                  <BigMetric label="Errores" value={String(finishedResult.errorCount)} color="text-rose-600" />
+                </div>
+
+                <div className="flex flex-wrap gap-4 pt-6">
+                  <Button
+                    size="lg"
+                    className="h-14 px-8 text-lg"
+                    onClick={() => {
+                      setTypedText("");
+                      setStartedAt(null);
+                      setElapsedPreviewMs(0);
+                      setFinishedResult(null);
+                      setServerMessage(null);
+                      inputRef.current?.focus();
+                    }}
+                  >
+                    Repetir Intento
+                  </Button>
+                  <Button variant="outline" size="lg" className="h-14 px-8 text-lg" asChild>
+                    <a href="/retos">Ver otros retos</a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="space-y-6">
+              <Card className="border-none shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-lg">Tu historial</CardTitle>
+                </CardHeader>
+                <CardContent className="px-2 pb-6">
+                  {history.length === 0 ? (
+                    <p className="px-4 text-sm text-muted-foreground">Primer intento registrado.</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {history.slice(0, 5).map((attempt) => (
+                        <div key={attempt.id} className="flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-slate-50">
+                          <div className="flex flex-col font-mono">
+                            <span className="font-bold">{attempt.wpm} WPM</span>
+                            <span className="text-[10px] text-muted-foreground">{new Date(attempt.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="font-bold text-emerald-600">{formatPercentage(attempt.accuracy)}</span>
+                            <div className="text-[10px]">{attempt.stars} ⭐</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <div className="rounded-3xl bg-indigo-600 p-6 text-white shadow-xl">
+                <p className="text-xs font-bold tracking-widest uppercase opacity-60">Objetivo Oro</p>
+                <p className="mt-1 text-3xl font-black">{target.goldWpm} WPM</p>
+                <p className="mt-4 text-sm leading-relaxed opacity-80">
+                  La precisión es la clave de la velocidad. Mantén un ritmo estable.
+                </p>
+              </div>
             </div>
-            <div className="rounded-[24px] border border-emerald-200 bg-emerald-50 p-4">
-              <p className="font-semibold">
-                Resultado: {finishedResult.stars} estrella{finishedResult.stars === 1 ? "" : "s"}
-              </p>
-              <p className="mt-1 text-sm text-emerald-800">
-                {finishedResult.passed
-                  ? "Nivel superado. Si estas dentro, tu progreso queda consolidado."
-                  : "Aun no alcanza el minimo. Ajusta el ritmo y vuelve a intentarlo."}
-              </p>
-            </div>
-            {serverMessage ? <p className="text-sm text-muted-foreground">{serverMessage}</p> : null}
-            {isPending ? <p className="text-sm text-muted-foreground">Guardando resultado...</p> : null}
-          </CardContent>
-        </Card>
-      ) : null}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BigMetric({ label, value, color = "text-slate-900" }: { label: string; value: string; color?: string }) {
+  return (
+    <div className="space-y-1 font-mono">
+      <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">{label}</p>
+      <p className={`text-4xl font-black ${color}`}>{value}</p>
     </div>
   );
 }
@@ -518,44 +609,6 @@ function TypingKeyboard({
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function MetricChip({
-  icon,
-  label,
-  value,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-center gap-3 rounded-[22px] border border-border bg-white/80 px-4 py-3">
-      <div className="flex size-10 items-center justify-center rounded-2xl bg-secondary text-primary">{icon}</div>
-      <div>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-        <p className="text-lg font-semibold">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[24px] border border-border bg-white/70 p-4">
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight">{value}</p>
-    </div>
-  );
-}
-
-function LiveStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[22px] border border-border/80 bg-slate-50/80 px-4 py-3">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-      <p className="mt-2 text-lg font-semibold text-slate-800">{value}</p>
     </div>
   );
 }

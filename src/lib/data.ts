@@ -167,3 +167,19 @@ export function getAllTutorials() {
   return tutorials;
 }
 
+export async function getAttemptsForUserByLevel(userId: string, levelId: string) {
+  return db
+    .select({
+      id: attempts.id,
+      wpm: attempts.wpm,
+      accuracy: attempts.accuracy,
+      stars: attempts.stars,
+      passed: attempts.passed,
+      createdAt: attempts.createdAt,
+    })
+    .from(attempts)
+    .where(and(eq(attempts.userId, userId), eq(attempts.levelId, levelId)))
+    .orderBy(desc(attempts.createdAt))
+    .limit(10);
+}
+

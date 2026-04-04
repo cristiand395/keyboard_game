@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { TypingGame } from "@/components/typing-game";
 import { getCachedSession } from "@/lib/auth";
-import { getLevelBySlug } from "@/lib/data";
+import { getAttemptsForUserByLevel, getLevelBySlug } from "@/lib/data";
 
 export default async function LevelPage({ params }: { params: Promise<{ slug: string }> }) {
   const [{ slug }, session] = await Promise.all([params, getCachedSession()]);
@@ -12,13 +12,10 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
     notFound();
   }
 
+  const history = session?.user?.id ? await getAttemptsForUserByLevel(session.user.id, level.id) : [];
+
   return (
-    <main className="shell space-y-6 pb-16">
-      <div className="space-y-3">
-        <Badge>{level.trackTitle}</Badge>
-        <h1 className="text-4xl font-bold tracking-tight">{level.title}</h1>
-        <p className="max-w-2xl text-muted-foreground">{level.description}</p>
-      </div>
+    <div className="flex min-h-screen flex-col bg-[#e0e7ff]/30">
       <TypingGame
         levelSlug={level.slug}
         title={level.title}
@@ -32,7 +29,9 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
           maxErrors: level.maxErrors,
         }}
         isAuthenticated={Boolean(session?.user)}
+        userName={session?.user?.name ?? session?.user?.email ?? "Invitado"}
+        history={history}
       />
-    </main>
+    </div>
   );
 }
