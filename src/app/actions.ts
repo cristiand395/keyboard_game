@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
@@ -249,4 +249,29 @@ export async function saveAttemptAction(input: SaveAttemptInput) {
     result,
     message: result.passed ? "Resultado guardado y progreso actualizado." : "Resultado guardado. Sigue practicando.",
   };
+}
+
+export async function updateUserNameAction(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { ok: false, message: "No autorizado." };
+  }
+
+  const name = String(formData.get("name") ?? "").trim();
+
+  if (!name) {
+    return { ok: false, message: "El nombre no puede estar vacío." };
+  }
+
+  await db.update(users).set({ name }).where(eq(users.id, session.user.id));
+
+  revalidatePath("/");
+  revalidatePath("/progreso");
+  revalidatePath("/retos");
+
+  return { ok: true, message: "Nombre actualizado correctamente." };
 }
