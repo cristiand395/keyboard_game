@@ -349,11 +349,6 @@ export function TypingGame({
             className="group relative cursor-text"
             onClick={() => inputRef.current?.focus()}
           >
-            {!startedAt && !finishedResult && (
-              <div className="absolute -left-20 top-1/2 -translate-y-1/2 rounded-lg bg-indigo-500 px-3 py-6 text-[10px] font-bold leading-none tracking-widest text-white uppercase [writing-mode:vertical-lr]">
-                START TYPING
-              </div>
-            )}
 
             <div className="relative z-10 font-mono text-[2.75rem] leading-[1.6] tracking-tight text-slate-400 md:text-[3.5rem]">
               <div className="whitespace-pre-wrap break-words">
