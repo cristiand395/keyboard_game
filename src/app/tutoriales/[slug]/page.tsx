@@ -43,7 +43,7 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
               </ul>
             </div>
             <Button asChild size="lg">
-              <Link href="/jugar">
+              <Link href="/retos">
                 Ir a practicar
                 <ArrowRight className="size-4" />
               </Link>

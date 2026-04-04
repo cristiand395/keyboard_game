@@ -2,8 +2,10 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json ./
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+CMD ["pnpm", "run", "dev", "--", "--hostname", "0.0.0.0"]

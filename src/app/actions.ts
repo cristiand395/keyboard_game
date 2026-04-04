@@ -206,8 +206,8 @@ export async function saveAttemptAction(input: SaveAttemptInput) {
     });
 
   revalidatePath("/progreso");
-  revalidatePath("/jugar");
-  revalidatePath(`/jugar/${input.levelSlug}`);
+  revalidatePath("/retos");
+  revalidatePath(`/retos/${input.levelSlug}`);
 
   return {
     ok: true,

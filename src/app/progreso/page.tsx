@@ -46,7 +46,7 @@ export default async function ProgressPage() {
             <div className="rounded-[24px] border border-dashed border-border bg-white/50 p-6">
               <p className="text-muted-foreground">Todavia no hay niveles guardados. Vamos a por el primero.</p>
               <Button asChild className="mt-4">
-                <Link href="/jugar">Jugar ahora</Link>
+                <Link href="/retos">Jugar ahora</Link>
               </Button>
             </div>
           ) : (
@@ -63,7 +63,7 @@ export default async function ProgressPage() {
                 <MetricItem label="Accuracy" value={formatPercentage(entry.bestAccuracy)} />
                 <MetricItem label="Stars" value={String(entry.bestStars)} />
                 <Button asChild variant="outline">
-                  <Link href={`/jugar/${entry.levelSlug}`}>Reintentar</Link>
+                  <Link href={`/retos/${entry.levelSlug}`}>Reintentar</Link>
                 </Button>
               </div>
             ))

@@ -2,7 +2,7 @@ services:
   web:
     image: node:22-alpine
     working_dir: /app
-    command: sh -c "tail -f /dev/null"
+    command: sh -c "pnpm install && pnpm run dev -- --hostname 0.0.0.0"
     stdin_open: true
     tty: true
     ports:
@@ -24,6 +24,8 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

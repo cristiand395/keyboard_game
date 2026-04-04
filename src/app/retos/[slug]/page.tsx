@@ -36,4 +36,3 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
     </main>
   );
 }
-

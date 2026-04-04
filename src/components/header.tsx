@@ -15,7 +15,7 @@ export async function Header() {
             <Link href="/">Inicio</Link>
           </Button>
           <Button asChild variant="ghost" size="sm">
-            <Link href="/jugar">Jugar</Link>
+            <Link href="/retos">Retos</Link>
           </Button>
           <Button asChild variant="ghost" size="sm">
             <Link href="/tutoriales">Tutoriales</Link>

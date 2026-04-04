@@ -46,7 +46,7 @@ export default async function PlayPage() {
                     Accuracy {level.target.minAccuracy}% · Oro {level.target.goldWpm} WPM
                   </p>
                   <Button asChild className="mt-5 w-full" variant={isUnlocked ? "default" : "outline"}>
-                    <Link href={`/jugar/${level.slug}`}>{isUnlocked ? "Jugar nivel" : "Ver detalle"}</Link>
+                    <Link href={`/retos/${level.slug}`}>{isUnlocked ? "Jugar nivel" : "Ver detalle"}</Link>
                   </Button>
                 </div>
               );
@@ -57,4 +57,3 @@ export default async function PlayPage() {
     </main>
   );
 }
-

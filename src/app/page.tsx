@@ -24,7 +24,7 @@ export default async function HomePage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link href="/jugar">
+              <Link href="/retos">
                 Empezar a jugar
                 <ArrowRight className="size-4" />
               </Link>

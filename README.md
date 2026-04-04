@@ -25,20 +25,20 @@ docker compose up --build
 3. Ejecuta migraciones y seed dentro del contenedor web:
 
 ```bash
-docker compose exec web npm run db:migrate
-docker compose exec web npm run db:seed
+docker compose exec web pnpm run db:migrate
+docker compose exec web pnpm run db:seed
 ```
 
 ## Scripts
 
-- `npm run dev`
-- `npm run build`
-- `npm run lint`
-- `npm run test`
-- `npm run test:e2e`
-- `npm run db:generate`
-- `npm run db:migrate`
-- `npm run db:seed`
+- `pnpm run dev`
+- `pnpm run build`
+- `pnpm run lint`
+- `pnpm run test`
+- `pnpm run test:e2e`
+- `pnpm run db:generate`
+- `pnpm run db:migrate`
+- `pnpm run db:seed`
 
 ## Despliegue
 
