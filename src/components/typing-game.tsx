@@ -1,8 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import {
+  ArrowLeft,
   BarChart2,
   Clock3,
   Crosshair,
@@ -304,29 +306,38 @@ export function TypingGame({
   return (
     <div className="flex min-h-screen flex-col font-sans">
       {/* Immersive Header */}
-      <header className="flex items-center justify-between border-b border-slate-200 bg-white/80 px-6 py-3 backdrop-blur-md">
-        <h2 className="text-lg font-semibold text-slate-700">{title}</h2>
-        <div className="flex items-center gap-6 text-slate-400">
-          <button
-            onClick={() => {
-              setTypedText("");
-              setStartedAt(null);
-              setElapsedPreviewMs(0);
-              setFinishedResult(null);
-              setServerMessage(null);
-              inputRef.current?.focus();
-            }}
-            className="transition-colors hover:text-primary"
-            title="Reiniciar"
-          >
-            <RotateCcw className="size-5" />
-          </button>
-          <Keyboard className="size-5 cursor-not-allowed opacity-30" />
-          <Volume2 className="size-5 cursor-not-allowed opacity-30" />
-          <BarChart2 className="size-5" />
-          <Settings className="size-5 cursor-not-allowed opacity-30" />
+      <header className="shell py-5">
+        <div className="panel flex items-center justify-between gap-4 px-5 py-3">
+          <div className="flex items-center gap-4">
+            <Button asChild variant="ghost" size="sm" className="-ml-2 h-9 w-9 rounded-full p-0">
+              <Link href="/retos" title="Volver a retos">
+                <ArrowLeft className="size-5" />
+              </Link>
+            </Button>
+            <h2 className="text-lg font-semibold text-slate-700">{title}</h2>
+          </div>
+          <div className="flex items-center gap-6 text-slate-400">
+            <button
+              onClick={() => {
+                setTypedText("");
+                setStartedAt(null);
+                setElapsedPreviewMs(0);
+                setFinishedResult(null);
+                setServerMessage(null);
+                inputRef.current?.focus();
+              }}
+              className="transition-colors hover:text-primary"
+              title="Reiniciar"
+            >
+              <RotateCcw className="size-5" />
+            </button>
+            <Keyboard className="size-5 cursor-not-allowed opacity-30" />
+            <Volume2 className="size-5 cursor-not-allowed opacity-30" />
+            <BarChart2 className="size-5" />
+            <Settings className="size-5 cursor-not-allowed opacity-30" />
+          </div>
+          <div className="font-semibold text-slate-700">{userName}</div>
         </div>
-        <div className="font-semibold text-slate-700">{userName}</div>
       </header>
 
       <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 pt-12 pb-24">
