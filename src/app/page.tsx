@@ -14,7 +14,7 @@ export default async function HomePage() {
     <main className="shell pb-16">
       <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div className="animate-rise space-y-6">
-          <Badge>desktop-first typing game</Badge>
+          <Badge>juego de mecanografia para pc</Badge>
           <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-slate-950 md:text-6xl">
             Mecanografia con tutoriales, niveles y progreso real desde la primera sesion
           </h1>
@@ -53,14 +53,14 @@ export default async function HomePage() {
               <div className="mt-6 grid grid-cols-3 gap-3">
                 <MiniMetric label="WPM" value="36" />
                 <MiniMetric label="ACC" value="97%" />
-                <MiniMetric label="Stars" value="2" />
+                <MiniMetric label="Estrellas" value="2" />
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Feature icon={<Flame className="size-5" />} title="Ritmo limpio" text="Feedback inmediato y medible." />
               <Feature
                 icon={<ChartNoAxesCombined className="size-5" />}
-                title="Dashboard"
+                title="Progreso"
                 text="Seguimiento de mejores marcas y precision."
               />
               <Feature icon={<Trophy className="size-5" />} title="Estrellas" text="Desbloqueo progresivo por nivel." />

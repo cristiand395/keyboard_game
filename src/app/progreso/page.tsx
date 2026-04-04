@@ -22,7 +22,7 @@ export default async function ProgressPage() {
   return (
     <main className="shell space-y-8 pb-16">
       <section className="space-y-3">
-        <Badge>dashboard</Badge>
+        <Badge>panel de control</Badge>
         <h1 className="text-4xl font-bold tracking-tight">Tu progreso</h1>
         <p className="max-w-2xl text-muted-foreground">
           Aqui ves tus mejores marcas, niveles completados y la traccion que llevas en el MVP.
@@ -60,8 +60,8 @@ export default async function ProgressPage() {
                   <p className="text-sm text-muted-foreground">Nivel {entry.order}</p>
                 </div>
                 <MetricItem label="WPM" value={String(entry.bestWpm)} />
-                <MetricItem label="Accuracy" value={formatPercentage(entry.bestAccuracy)} />
-                <MetricItem label="Stars" value={String(entry.bestStars)} />
+                <MetricItem label="Precisión" value={formatPercentage(entry.bestAccuracy)} />
+                <MetricItem label="Estrellas" value={String(entry.bestStars)} />
                 <Button asChild variant="outline">
                   <Link href={`/retos/${entry.levelSlug}`}>Reintentar</Link>
                 </Button>

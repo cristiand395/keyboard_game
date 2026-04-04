@@ -450,7 +450,7 @@ export function TypingGame({
           {!finishedResult && startedAt && (
             <div className="flex items-center justify-center gap-12 font-mono text-sm tracking-widest text-slate-400 uppercase">
               <div className="flex flex-col items-center gap-1">
-                <span className="text-[10px] opacity-60">Accuracy</span>
+                <span className="text-[10px] opacity-60">Puntaje</span>
                 <span className="text-xl font-bold text-slate-600">{formatPercentage(currentMetrics?.accuracy ?? 0)}</span>
               </div>
               <div className="flex flex-col items-center gap-1">
@@ -458,7 +458,7 @@ export function TypingGame({
                 <span className="text-xl font-bold text-slate-600">{currentMetrics?.wpm ?? 0}</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <span className="text-[10px] opacity-60">Time</span>
+                <span className="text-[10px] opacity-60">Tiempo</span>
                 <span className="text-xl font-bold text-slate-600">{formatDuration(elapsedPreviewMs)}</span>
               </div>
             </div>
