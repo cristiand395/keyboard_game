@@ -3,10 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { attempts, levels, userLevelProgress, userStatsDaily, users } from "@/db/schema";
+import { attempts, levels, userLevelProgress, userStatsDaily, users, verificationTokens } from "@/db/schema";
 import { auth, hashPassword, signIn } from "@/lib/auth";
 import { buildLevelResult, resolveUnlock } from "@/lib/typing";
 import { getTracksWithLevels } from "@/lib/data";
+import { sendVerificationEmail } from "@/lib/emails";
 
 type ActionState = {
   ok: boolean;
@@ -27,9 +28,9 @@ export async function registerUserAction(
     return { ok: false, message: "Introduce un email valido y una clave de al menos 8 caracteres." };
   }
 
-  const existingUser = await db.select().from(users).where(eq(users.email, email));
+  const [existingUser] = await db.select().from(users).where(eq(users.email, email));
 
-  if (existingUser.length > 0) {
+  if (existingUser) {
     return { ok: false, message: "Ya existe una cuenta con este email." };
   }
 
@@ -39,14 +40,22 @@ export async function registerUserAction(
     passwordHash: hashPassword(password),
   });
 
-  await signIn("credentials", {
-    email,
-    password,
-    redirect: false,
+  const token = crypto.randomUUID();
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await db.insert(verificationTokens).values({
+    identifier: email,
+    token,
+    expires,
   });
 
-  revalidatePath("/progreso");
-  return { ok: true, message: "Cuenta creada. Ya puedes guardar tu progreso." };
+  const emailRes = await sendVerificationEmail(email, name, token);
+
+  if (!emailRes.success) {
+    return { ok: false, message: "Cuenta creada, pero hubo un error enviando el correo de verificacion. Contacta con soporte." };
+  }
+
+  return { ok: true, message: "Cuenta casi lista. Revisa tu correo para verificar tu cuenta antes de entrar." };
 }
 
 export async function loginUserAction(
@@ -64,12 +73,34 @@ export async function loginUserAction(
       password,
       redirect: false,
     });
-  } catch {
-    return { ok: false, message: "No se pudo iniciar sesion. Revisa tus datos." };
+    revalidatePath("/progreso");
+    return { ok: true, message: "Has entrado correctamente." };
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("EMAIL_NOT_VERIFIED")) {
+      return { ok: false, message: "Tu correo no ha sido verificado. Revisa tu bandeja de entrada." };
+    }
+    return { ok: false, message: "Credenciales invalidas." };
+  }
+}
+
+export async function verifyEmailAction(token: string): Promise<ActionState> {
+  const [dbToken] = await db
+    .select()
+    .from(verificationTokens)
+    .where(eq(verificationTokens.token, token));
+
+  if (!dbToken || dbToken.expires < new Date()) {
+    return { ok: false, message: "El enlace ha caducado o es invalido." };
   }
 
-  revalidatePath("/progreso");
-  return { ok: true, message: "Sesion iniciada correctamente." };
+  await db
+    .update(users)
+    .set({ emailVerified: new Date() })
+    .where(eq(users.email, dbToken.identifier));
+
+  await db.delete(verificationTokens).where(eq(verificationTokens.token, token));
+
+  return { ok: true, message: "¡Cuenta verificada! Ya puedes iniciar sesion." };
 }
 
 type SaveAttemptInput = {

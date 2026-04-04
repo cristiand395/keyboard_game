@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { cache } from "react";
 import { createHash } from "node:crypto";
@@ -23,6 +24,11 @@ export const authConfig = {
   },
   secret: env.AUTH_SECRET,
   providers: [
+    Google({
+      clientId: env.AUTH_GOOGLE_ID,
+      clientSecret: env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
     Credentials({
       name: "Credentials",
       credentials: {
@@ -39,8 +45,14 @@ export const authConfig = {
           .from(users)
           .where(eq(users.email, String(credentials.email).toLowerCase()));
 
+        // Para login con contraseña, el usuario debe existir y tener passwordHash
         if (!user?.passwordHash) {
           return null;
+        }
+
+        // BLOQUEO: Solo permitir login si el email está verificado
+        if (!user.emailVerified) {
+          throw new Error("EMAIL_NOT_VERIFIED");
         }
 
         const incomingHash = hashPassword(String(credentials.password));
