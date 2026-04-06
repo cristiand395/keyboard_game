@@ -3,6 +3,7 @@ import { getCachedSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { UserMenu } from "@/components/user-menu";
+import { MainNav } from "@/components/main-nav";
 
 export async function Header() {
   const session = await getCachedSession();
@@ -11,26 +12,7 @@ export async function Header() {
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md">
       <div className="shell flex items-center justify-between gap-4 py-4">
         <Logo />
-        <nav className="hidden items-center gap-6 md:flex">
-          <Link
-            href="/"
-            className="font-display text-sm font-bold uppercase tracking-tight text-primary border-b-2 border-primary pb-0.5 transition-colors"
-          >
-            Inicio
-          </Link>
-          <Link
-            href="/retos"
-            className="font-display text-sm font-bold uppercase tracking-tight text-muted-foreground hover:text-primary transition-colors"
-          >
-            Retos
-          </Link>
-          <Link
-            href="/tutoriales"
-            className="font-display text-sm font-bold uppercase tracking-tight text-muted-foreground hover:text-primary transition-colors"
-          >
-            Tutoriales
-          </Link>
-        </nav>
+        <MainNav />
         <div className="flex items-center gap-4">
           {session?.user ? (
             <UserMenu user={session.user} />
