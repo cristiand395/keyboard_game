@@ -2,18 +2,20 @@ import Link from "next/link";
 import { getCachedSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
-import { UserMenu } from "@/components/user-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { MainNav } from "@/components/main-nav";
+import { UserMenu } from "@/components/user-menu";
 
 export async function Header() {
   const session = await getCachedSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-foreground/5">
       <div className="shell flex items-center justify-between gap-4 py-4">
         <Logo />
         <MainNav />
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           {session?.user ? (
             <UserMenu user={session.user} />
           ) : (

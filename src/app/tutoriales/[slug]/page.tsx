@@ -18,7 +18,7 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
     <main className="shell pb-16">
       <Card className="overflow-hidden">
         <CardHeader className="gap-4 border-b border-border/70 bg-slate-50/70">
-          <Badge>{tutorial.eyebrow}</Badge>
+          <Badge className="font-mono text-primary bg-primary/10 border border-primary/20 tracking-widest leading-none">{tutorial.eyebrow}</Badge>
           <CardTitle className="text-4xl">{tutorial.title}</CardTitle>
           <p className="max-w-3xl text-muted-foreground">{tutorial.summary}</p>
         </CardHeader>

@@ -64,9 +64,9 @@ export default async function PlayPage() {
                     )}
                     
                     <div className="flex items-center justify-between mb-8">
-                       <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded uppercase tracking-widest leading-none">
+                       <Badge className="font-mono text-primary bg-primary/10 border border-primary/20 tracking-widest leading-none">
                          Instancia {String(level.order).padStart(2, '0')}
-                       </span>
+                       </Badge>
                        {isUnlocked && <Play className="size-4 text-primary animate-pulse" />}
                     </div>
 
@@ -110,7 +110,9 @@ export default async function PlayPage() {
                         asChild 
                         className={cn(
                           "w-full h-11 rounded-md font-display font-bold uppercase tracking-widest text-[10px] transition-all active:scale-95",
-                          lp && lp.bestStars > 0 ? "bg-surface-highest hover:bg-surface-high" : "neon-gradient text-primary-foreground shadow-[0_0_15px_rgba(161,250,255,0.1)] border-none"
+                          lp && lp.bestStars > 0 
+                            ? "bg-white/5 border border-white/10 text-foreground hover:bg-white/10 hover:border-primary/50" 
+                            : "neon-gradient text-primary-foreground border-none"
                         )}
                       >
                         <Link href={`/retos/${level.slug}`}>

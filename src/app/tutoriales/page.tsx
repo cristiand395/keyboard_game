@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllTutorials } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { BookOpen, ChevronRight, Terminal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function TutorialsPage() {
   const tutorials = getAllTutorials();
@@ -33,10 +34,10 @@ export default function TutorialsPage() {
             <div className="absolute -top-10 -right-10 size-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-all" />
             
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-highest rounded text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-secondary-foreground mb-4">
-                <Terminal className="size-3" />
+              <Badge className="font-mono text-secondary bg-secondary/10 border border-secondary/20 tracking-widest leading-none mb-4">
+                <Terminal className="size-3 mr-2" />
                 {tutorial.eyebrow}
-              </div>
+              </Badge>
               <h2 className="text-2xl font-display font-black text-foreground uppercase group-hover:text-secondary transition-colors mb-4 leading-tight">
                 {tutorial.title}
               </h2>
@@ -50,8 +51,8 @@ export default function TutorialsPage() {
                   <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest opacity-50">Tiempo_Estimado</span>
                   <span className="text-xs font-display font-bold uppercase text-foreground">05:00 Min</span>
                </div>
-               <Button asChild variant="ghost" className="p-0 h-10 w-10 rounded bg-surface-highest group-hover:bg-secondary group-hover:text-secondary-foreground transition-all">
-                 <Link href={`/tutoriales/${tutorial.slug}`}>
+               <Button asChild variant="ghost" className="p-0 h-10 w-10 rounded bg-white/5 border border-white/10 hover:border-secondary/50 group-hover:bg-secondary group-hover:text-secondary-foreground transition-all active:scale-95">
+                 <Link href={`/tutoriales/${tutorial.slug}`} aria-label={`Ir a ${tutorial.title}`}>
                    <ChevronRight className="size-5" />
                  </Link>
                </Button>
