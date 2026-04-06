@@ -49,7 +49,7 @@ export function UserMenu({ user }: UserMenuProps) {
           
           <div className="absolute right-0 top-full z-50 mt-4 w-64 animate-in fade-in slide-in-from-top-2 zoom-in-95 bg-surface-highest border border-white/10 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] duration-200 rounded-lg overflow-hidden">
             <div className="px-4 py-4 mb-2 border-b border-white/5">
-               <p className="text-[10px] font-mono text-primary font-bold uppercase tracking-[0.3em] mb-1">Perfil_Usuario</p>
+               <p className="text-[10px] font-mono text-primary font-bold uppercase tracking-[0.3em] mb-1">Perfil</p>
                <p className="text-xs font-sans text-muted-foreground truncate">{user.email}</p>
             </div>
 
@@ -59,7 +59,7 @@ export function UserMenu({ user }: UserMenuProps) {
               className="group flex w-full items-center gap-4 px-4 py-3 text-[10px] font-display font-bold uppercase tracking-widest text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary rounded-md"
             >
               <ChartNoAxesCombined className="size-4 opacity-50 group-hover:opacity-100" />
-              Análisis_Misión
+              Análisis
             </Link>
 
             <Link
@@ -68,7 +68,7 @@ export function UserMenu({ user }: UserMenuProps) {
               className="group flex w-full items-center gap-4 px-4 py-3 text-[10px] font-display font-bold uppercase tracking-widest text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary rounded-md"
             >
               <Settings className="size-4 opacity-50 group-hover:opacity-100" />
-              Config_Sistema
+              Configuración
             </Link>
             
             <div className="my-2 border-t border-white/5" />

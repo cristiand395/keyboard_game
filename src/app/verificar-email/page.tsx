@@ -61,7 +61,7 @@ export default function VerifyEmailPage() {
           </div>
 
           <h1 className="text-[10px] font-mono font-bold uppercase tracking-[0.5em] text-muted-foreground mb-4">
-            {status === "loading" ? "VERIFICANDO_IDENTIDAD" : status === "success" ? "IDENTIDAD_CONFIRMADA" : "FALLO_DE_SISTEMA"}
+            {status === "loading" ? "VERIFICANDO IDENTIDAD" : status === "success" ? "IDENTIDAD CONFIRMADA" : "FALLO DE SISTEMA"}
           </h1>
 
           <p className="text-xl font-display font-bold text-foreground uppercase tracking-tight mb-10 leading-snug">

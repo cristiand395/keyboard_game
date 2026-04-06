@@ -18,9 +18,9 @@ export default async function PlayPage() {
       <section className="w-full mb-16 animate-rise">
         <div className="flex items-center gap-3 text-primary mb-4">
           <Play className="size-5" />
-          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Misión_Despliegue_Operativo</span>
+          <span className="font-display text-[10px] font-bold tracking-[0.4em] uppercase">Práctica de velocidad</span>
         </div>
-        <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight text-foreground uppercase mb-6">
+        <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight text-foreground mb-6 uppercase">
           Nodos de <span className="text-primary italic">Desafío</span>
         </h1>
         <p className="text-muted-foreground max-w-2xl font-sans text-lg leading-relaxed">
@@ -34,7 +34,7 @@ export default async function PlayPage() {
           <div key={track.id} className="space-y-10 animate-rise" style={{ animationDelay: "100ms" }}>
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/5 pb-6">
                <div>
-                  <h2 className="text-xs font-display text-primary font-bold uppercase tracking-[0.3em] mb-2">{track.levels.length} Instancias</h2>
+                  <h2 className="text-xs font-display text-primary font-bold tracking-[0.3em] mb-2 uppercase">{track.levels.length} Niveles</h2>
                   <p className="text-4xl font-display font-bold text-foreground tracking-tight uppercase">{track.title}</p>
                </div>
                <p className="text-sm text-muted-foreground font-sans max-w-md md:text-right mt-4 md:mt-0">
@@ -53,7 +53,7 @@ export default async function PlayPage() {
                   <div 
                     key={level.id} 
                     className={cn(
-                      "group bg-surface-low border border-white/5 rounded-lg p-8 flex flex-col hover:bg-surface-high transition-all relative overflow-hidden",
+                      "group bg-surface-low border border-white/5 rounded-lg p-8 flex flex-col hover:bg-surface-high transition-all relative overflow-hidden shadow-sm",
                       !isUnlocked && "opacity-50 grayscale pointer-events-none"
                     )}
                   >
@@ -64,7 +64,7 @@ export default async function PlayPage() {
                     )}
                     
                     <div className="flex items-center justify-between mb-8">
-                       <Badge className="font-mono text-primary bg-primary/10 border border-primary/20 tracking-widest leading-none">
+                       <Badge className="font-mono text-primary bg-primary/10 border border-primary/20 tracking-widest leading-none uppercase">
                          Instancia {String(level.order).padStart(2, '0')}
                        </Badge>
                        {isUnlocked && <Play className="size-4 text-primary animate-pulse" />}
@@ -91,8 +91,8 @@ export default async function PlayPage() {
                             ))}
                           </div>
                           <div className="text-right">
-                             <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Rendimiento_Máx</p>
-                             <p className="text-sm font-display font-bold text-foreground">
+                             <p className="text-[8px] font-mono text-muted-foreground tracking-widest mb-1 uppercase">Mejor marca</p>
+                             <p className="text-sm font-display font-bold text-foreground uppercase">
                                {lp.bestWpm} <span className="text-[10px] text-primary">PPM</span>
                              </p>
                           </div>
@@ -102,7 +102,7 @@ export default async function PlayPage() {
                           <div className="flex gap-1">
                              {[1, 2, 3].map(s => <Star key={s} className="size-3 fill-white/10 text-white/20" />)}
                           </div>
-                          <p className="text-[9px] font-mono font-bold text-muted-foreground uppercase tracking-widest">Sin_Registros</p>
+                          <p className="text-[9px] font-mono font-bold text-muted-foreground tracking-widest uppercase">Sin registros</p>
                         </div>
                       )}
 

@@ -16,7 +16,7 @@ export default async function ConfiguracionPage() {
       <section className="w-full mb-16 animate-rise">
         <div className="flex items-center gap-3 text-secondary mb-4">
           <SettingsIcon className="size-5" />
-          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Sistema:Panel_Configuración</span>
+          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Configuración</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight text-foreground uppercase mb-4">
           Control de <span className="text-secondary italic">Cuenta</span>

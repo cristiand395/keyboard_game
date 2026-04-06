@@ -109,10 +109,10 @@ export function TypingGame({
           <div className="hidden md:flex items-center gap-8 font-display text-xs font-bold uppercase tracking-widest">
              <div className="flex items-center gap-2 text-primary border-b-2 border-primary pb-1">
                 <Bolt className="size-4" />
-                EN_VIVO
+                En vivo
              </div>
              <div className="text-muted-foreground hover:text-primary transition-all cursor-pointer">
-                RANKING_GLOBAL
+                Ranking global
              </div>
           </div>
           <div className="flex items-center gap-4">
@@ -127,21 +127,21 @@ export function TypingGame({
         {/* Stats Dashboard */}
         <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 animate-rise">
            <StatCard 
-             label="VELOCIDAD_PPM" 
+             label="Velocidad (PPM)" 
              value={currentMetrics?.wpm ?? 0} 
              color="primary" 
              icon={<TrendingUp className="size-4" />}
              glowColor="#a1faff"
            />
            <StatCard 
-             label="PRECISIÓN_PCT" 
+             label="Precisión (%)" 
              value={formatPercentage(currentMetrics?.accuracy ?? 100).replace("%", "")} 
              unit="%" 
              color="secondary" 
              glowColor="#c47fff"
            />
            <StatCard 
-             label="TIEMPO_TRANSCURRIDO" 
+             label="Tiempo transcurrido" 
              value={formatDuration(elapsedPreviewMs)} 
              color="tertiary" 
              icon={<Clock3 className="size-4" />}
@@ -153,14 +153,14 @@ export function TypingGame({
         <div className="w-full max-w-5xl relative group animate-rise" style={{ animationDelay: "100ms" }}>
            <div 
              className={cn(
-               "bg-surface-lowest border-b-2 border-primary/10 p-12 rounded-lg backdrop-blur-md transition-all duration-300 relative overflow-hidden",
+               "bg-surface-lowest border-b-2 border-primary/10 p-12 rounded-lg backdrop-blur-md transition-all duration-300 relative overflow-hidden shadow-sm",
                !isFocused && !finishedResult && "opacity-40 grayscale blur-[2px]",
                isFocused && "border-primary/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
              )}
              onClick={() => inputRef.current?.focus()}
            >
              {/* Character Stream */}
-             <div className="font-mono text-3xl md:text-5xl leading-relaxed tracking-normal select-none relative z-10 uppercase">
+             <div className="font-mono text-3xl md:text-5xl leading-relaxed tracking-normal select-none relative z-10">
                 {targetText.split("").map((char, index) => {
                   const typedChar = typedText[index];
                   const isActive = index === typedText.length && !finishedResult;
@@ -185,11 +185,11 @@ export function TypingGame({
              {/* Focus Overlay */}
              {!isFocused && !finishedResult && (
                <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/20 backdrop-blur-sm cursor-pointer">
-                  <div className="bg-surface-high p-6 rounded border border-white/10 flex flex-col items-center gap-4 animate-in zoom-in-95 font-display text-xs font-bold uppercase tracking-[0.3em]">
-                    <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-pulse">
+                  <div className="bg-surface-high p-6 rounded border border-white/10 flex flex-col items-center gap-4 animate-in zoom-in-95 font-display text-xs font-bold tracking-[0.3em] uppercase">
+                    <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-pulse shadow-glow">
                       <Bolt className="size-6" />
                     </div>
-                    Sincronizar Terminal para Continuar
+                    Haz clic para sincronizar la terminal
                   </div>
                </div>
              )}
@@ -225,14 +225,14 @@ export function TypingGame({
 
            {/* Key-Cap Hints */}
            <div className="absolute -bottom-10 right-0 flex gap-6">
-              <KeyHint chip="ESC" action="REINICIAR" onClick={() => {
+              <KeyHint chip="ESC" action="Reiniciar" onClick={() => {
                  setTypedText("");
                  setStartedAt(null);
                  setElapsedPreviewMs(0);
                  setFinishedResult(null);
                  inputRef.current?.focus();
               }} />
-              <KeyHint chip="CTRL+R" action="NUEVO_MÓDULO" href="/retos" />
+              <KeyHint chip="CTRL+R" action="Siguiente misión" href="/retos" />
            </div>
         </div>
       </main>
@@ -242,23 +242,23 @@ export function TypingGame({
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-background/40 backdrop-blur-xl p-8 animate-in fade-in duration-500">
            <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8 animate-in zoom-in-95 duration-500">
               {/* Performance Analysis */}
-              <div className="bg-surface-low rounded-lg p-12 border border-white/5 relative overflow-hidden">
+              <div className="bg-surface-low rounded-lg p-12 border border-white/5 relative overflow-hidden shadow-2xl">
                  <div className="absolute top-0 left-0 w-1 h-full bg-primary shadow-[0_0_20px_#a1faff]"></div>
                  
                  <div className="flex justify-between items-start mb-16">
                     <div>
-                      <h2 className="text-secondary font-display font-bold text-xs uppercase tracking-[0.4em] mb-2">Protocolo Completado</h2>
+                      <h2 className="text-secondary font-display font-bold text-xs tracking-[0.4em] mb-2 uppercase">¡Protocolo completado!</h2>
                       <p className="text-5xl font-display font-extrabold tracking-tight text-foreground uppercase">{title}</p>
                     </div>
-                    <div className="text-6xl font-display font-black text-primary">
+                    <div className="text-6xl font-display font-black text-primary shadow-glow">
                        {finishedResult.stars} <span className="text-2xl align-top">★</span>
                     </div>
                  </div>
 
                  <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-                    <ResultStat label="PPM Final" value={finishedResult.wpm} color="primary" />
+                    <ResultStat label="PPM final" value={finishedResult.wpm} color="primary" />
                     <ResultStat label="Precisión" value={`${formatPercentage(finishedResult.accuracy)}`} color="secondary" />
-                    <ResultStat label="Correcto" value={liveStats.correct} />
+                    <ResultStat label="Correctas" value={liveStats.correct} />
                     <ResultStat label="Errores" value={finishedResult.errorCount} color="tertiary" />
                  </div>
 
@@ -273,33 +273,33 @@ export function TypingGame({
                         inputRef.current?.focus();
                       }}
                     >
-                      Reiniciar Protocolo
+                      Volver a intentar
                     </Button>
                     {nextLevelSlug && finishedResult.passed && (
-                      <Button asChild className="h-14 px-10 font-display font-bold uppercase tracking-widest text-xs rounded-md bg-surface-highest hover:bg-surface-high transition-all active:scale-95">
-                        <Link href={`/retos/${nextLevelSlug}`}>Siguiente Módulo</Link>
+                      <Button asChild className="h-14 px-10 font-display font-bold uppercase tracking-widest text-xs rounded-md bg-surface-highest hover:bg-surface-high transition-all active:scale-95 border border-white/10">
+                        <Link href={`/retos/${nextLevelSlug}`}>Siguiente módulo</Link>
                       </Button>
                     )}
                     <Button variant="ghost" asChild className="h-14 font-display font-bold uppercase tracking-widest text-xs text-muted-foreground hover:text-foreground">
-                      <Link href="/retos">Volver al Panel</Link>
+                      <Link href="/retos">Volver al panel</Link>
                     </Button>
                  </div>
               </div>
 
               {/* Sidebar/History */}
               <div className="space-y-8">
-                 <div className="bg-surface-highest p-10 rounded-lg border border-white/5">
-                    <h3 className="font-display font-bold text-xs uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+                 <div className="bg-surface-highest p-10 rounded-lg border border-white/5 shadow-sm">
+                    <h3 className="font-display font-bold text-xs tracking-[0.3em] mb-8 flex items-center gap-3 uppercase">
                        <Trophy className="size-4 text-secondary" />
-                       Contexto de Ranking
+                       Historial de intentos
                     </h3>
                     <div className="space-y-6">
                        {history.length > 0 ? history.slice(0, 3).map((h, i) => (
-                         <div key={i} className="flex justify-between items-center bg-surface-low/50 p-4 rounded border border-white/5">
-                            <div className="font-mono text-[10px] text-muted-foreground uppercase">Sesión_{h.id.slice(0, 4)}</div>
+                         <div key={i} className="flex justify-between items-center bg-surface-low/50 p-4 rounded border border-white/5 transition-colors hover:border-primary/20">
+                            <div className="font-mono text-[10px] text-muted-foreground uppercase">Sesión {h.id.slice(0, 4)}</div>
                             <div className="text-right">
-                               <p className="font-display font-bold text-foreground uppercase">{h.wpm} PPM</p>
-                               <p className="text-[10px] font-mono text-secondary uppercase px-1">{formatPercentage(h.accuracy)} ACC</p>
+                               <p className="font-display font-bold text-foreground">{h.wpm} PPM</p>
+                               <p className="text-[10px] font-mono text-secondary px-1 uppercase">{formatPercentage(h.accuracy)} Precisión</p>
                             </div>
                          </div>
                        )) : (
@@ -311,7 +311,7 @@ export function TypingGame({
                  </div>
 
                  <div className="bg-primary/5 p-8 rounded-lg border border-primary/20">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-primary mb-3 font-extrabold leading-none">Kit_Inteligencia</p>
+                    <p className="font-mono text-[9px] tracking-[0.3em] text-primary mb-3 font-extrabold leading-none uppercase">Análisis táctico</p>
                     <p className="text-sm font-sans text-muted-foreground leading-relaxed">
                        Tu precisión es el puente entre la intención y la ejecución. En este módulo, mantuviste un pico de <span className="text-primary font-bold">{finishedResult.wpm} PPM</span>.
                     </p>

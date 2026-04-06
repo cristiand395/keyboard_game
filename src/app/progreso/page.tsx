@@ -25,7 +25,7 @@ export default async function ProgressPage() {
       <section className="w-full mb-16 animate-rise">
         <div className="flex items-center gap-3 text-primary mb-4">
           <Shield className="size-5" />
-          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Autenticación_Perfil_Usuario</span>
+          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Análisis</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight text-foreground uppercase mb-4">
           Análisis de <span className="text-primary italic">Entrenamiento</span>
