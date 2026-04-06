@@ -5,7 +5,7 @@ import { getCachedSession } from "@/lib/auth";
 import { getProgressForUser } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export default async function PlayPage() {
   const [tracks, session] = await Promise.all([getTracksWithLevels(), getCachedSession()]);
@@ -13,80 +13,118 @@ export default async function PlayPage() {
   const unlockedSlugs = new Set(progress.map((entry) => entry.levelSlug));
 
   return (
-    <main className="shell space-y-8 pb-16">
-      <section className="space-y-3">
-        <Badge>niveles</Badge>
-        <h1 className="text-4xl font-bold tracking-tight">Elige tu siguiente reto</h1>
-        <p className="max-w-2xl text-muted-foreground">
-          Los primeros niveles quedan accesibles en abierto. Cuando guardes resultados, el siguiente nivel se
-          desbloquea automaticamente al superar el actual.
+    <main className="grow flex flex-col items-center px-8 py-16 max-w-7xl mx-auto w-full">
+      {/* Header Section */}
+      <section className="w-full mb-16 animate-rise">
+        <div className="flex items-center gap-3 text-primary mb-4">
+          <Play className="size-5" />
+          <span className="font-display text-[10px] font-bold uppercase tracking-[0.4em]">Misión_Despliegue_Operativo</span>
+        </div>
+        <h1 className="text-5xl md:text-7xl font-display font-extrabold tracking-tight text-foreground uppercase mb-6">
+          Nodos de <span className="text-primary italic">Desafío</span>
+        </h1>
+        <p className="text-muted-foreground max-w-2xl font-sans text-lg leading-relaxed">
+          Los módulos iniciales están abiertos para calibración. Completa los requisitos de precisión para desbloquear instancias de mayor dificultad.
         </p>
       </section>
 
-      {tracks.map((track) => (
-        <Card key={track.id}>
-          <CardHeader>
-            <CardTitle>{track.title}</CardTitle>
-            <CardDescription>{track.description}</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {track.levels.map((level, index) => {
-              const isUnlocked =
-                index === 0 || unlockedSlugs.has(level.slug) || unlockedSlugs.has(track.levels[index - 1]?.slug ?? "");
+      {/* Tracks Container */}
+      <div className="w-full space-y-24">
+        {tracks.map((track) => (
+          <div key={track.id} className="space-y-10 animate-rise" style={{ animationDelay: "100ms" }}>
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/5 pb-6">
+               <div>
+                  <h2 className="text-xs font-display text-primary font-bold uppercase tracking-[0.3em] mb-2">{track.levels.length} Instancias</h2>
+                  <p className="text-4xl font-display font-bold text-foreground tracking-tight uppercase">{track.title}</p>
+               </div>
+               <p className="text-sm text-muted-foreground font-sans max-w-md md:text-right mt-4 md:mt-0">
+                  {track.description || "Entrenamiento especializado en lógica de entrada y eficiencia cinética."}
+               </p>
+            </div>
 
-              const lp = progress.find((p) => p.levelSlug === level.slug);
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {track.levels.map((level, index) => {
+                const isUnlocked =
+                  index === 0 || unlockedSlugs.has(level.slug) || unlockedSlugs.has(track.levels[index - 1]?.slug ?? "");
 
-              return (
-                <div key={level.id} className="group relative flex flex-col rounded-[32px] border border-border bg-white/50 p-6 transition-all hover:bg-white hover:shadow-xl">
-                  <div className="flex items-center justify-between">
-                    <Badge className="rounded-full px-3 py-1 font-mono text-[10px] tracking-widest uppercase">Nivel {level.order}</Badge>
-                    {isUnlocked ? <Play className="size-4 text-primary" /> : <LockKeyhole className="size-4 text-slate-300" />}
-                  </div>
-                  <h2 className="mt-5 text-xl font-bold tracking-tight text-slate-900">{level.title}</h2>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500">{level.description}</p>
-                  
-                  <div className="mt-8 flex h-10 items-center justify-between border-t border-slate-50 pt-4">
-                    {lp ? (
-                      <>
-                        <div className="flex gap-1">
-                          {[1, 2, 3].map((s) => (
-                            <Star
-                              key={s}
-                              className={`size-4 ${
-                                s <= (lp.bestStars ?? 0) 
-                                  ? "fill-amber-400 text-amber-400" 
-                                  : "fill-slate-100 text-slate-200"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] tracking-tighter text-slate-300 uppercase">Mejor puntaje</p>
-                          <p className="text-sm font-bold text-slate-700">
-                            {lp.bestWpm} WPM · {lp.bestAccuracy}%
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      // Espacio vacío si no hay progreso recorded
-                      <div className="flex w-full items-center justify-between opacity-50">
-                        <div className="flex gap-1">
-                           {[1, 2, 3].map(s => <Star key={s} className="size-4 fill-slate-50 text-slate-100" />)}
-                        </div>
-                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Sin intentos</p>
+                const lp = progress.find((p) => p.levelSlug === level.slug);
+
+                return (
+                  <div 
+                    key={level.id} 
+                    className={cn(
+                      "group bg-surface-low border border-white/5 rounded-lg p-8 flex flex-col hover:bg-surface-high transition-all relative overflow-hidden",
+                      !isUnlocked && "opacity-50 grayscale pointer-events-none"
+                    )}
+                  >
+                    {!isUnlocked && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/20 backdrop-blur-[2px] z-20">
+                         <LockKeyhole className="size-8 text-white/20" />
                       </div>
                     )}
-                  </div>
+                    
+                    <div className="flex items-center justify-between mb-8">
+                       <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded uppercase tracking-widest leading-none">
+                         Instancia {String(level.order).padStart(2, '0')}
+                       </span>
+                       {isUnlocked && <Play className="size-4 text-primary animate-pulse" />}
+                    </div>
 
-                  <Button asChild className="mt-6 w-full rounded-2xl font-bold" variant={isUnlocked ? "default" : "outline"}>
-                    <Link href={`/retos/${level.slug}`}>{isUnlocked ? "Jugar nivel" : "Ver detalle"}</Link>
-                  </Button>
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-      ))}
+                    <h3 className="text-xl font-display font-bold text-foreground uppercase group-hover:text-primary transition-colors leading-tight mb-3 grow">
+                      {level.title}
+                    </h3>
+
+                    <div className="mt-8 pt-6 border-t border-white/5 flex flex-col gap-4">
+                      {lp ? (
+                        <div className="flex justify-between items-end">
+                          <div className="flex gap-1">
+                            {[1, 2, 3].map((s) => (
+                              <Star
+                                key={s}
+                                className={cn(
+                                  "size-3 shadow-glow",
+                                  s <= (lp.bestStars ?? 0) 
+                                    ? "fill-primary text-primary" 
+                                    : "fill-white/5 text-white/10"
+                                )}
+                              />
+                            ))}
+                          </div>
+                          <div className="text-right">
+                             <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Rendimiento_Máx</p>
+                             <p className="text-sm font-display font-bold text-foreground">
+                               {lp.bestWpm} <span className="text-[10px] text-primary">PPM</span>
+                             </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex justify-between items-center opacity-30">
+                          <div className="flex gap-1">
+                             {[1, 2, 3].map(s => <Star key={s} className="size-3 fill-white/10 text-white/20" />)}
+                          </div>
+                          <p className="text-[9px] font-mono font-bold text-muted-foreground uppercase tracking-widest">Sin_Registros</p>
+                        </div>
+                      )}
+
+                      <Button 
+                        asChild 
+                        className={cn(
+                          "w-full h-11 rounded-md font-display font-bold uppercase tracking-widest text-[10px] transition-all active:scale-95",
+                          lp && lp.bestStars > 0 ? "bg-surface-highest hover:bg-surface-high" : "neon-gradient text-primary-foreground shadow-[0_0_15px_rgba(161,250,255,0.1)] border-none"
+                        )}
+                      >
+                        <Link href={`/retos/${level.slug}`}>
+                          {lp && lp.bestStars > 0 ? "Repetir" : isUnlocked ? "Iniciar" : "Bloqueado"}
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }

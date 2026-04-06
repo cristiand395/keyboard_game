@@ -22,7 +22,10 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
   const nextLevelSlug = allLevels[currentIndex + 1]?.slug;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#e0e7ff]/30">
+    <div className="flex grow flex-col bg-background relative overflow-hidden">
+      {/* Background kinetic effect */}
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
+      
       <TypingGame
         levelSlug={level.slug}
         title={level.title}
@@ -36,7 +39,7 @@ export default async function LevelPage({ params }: { params: Promise<{ slug: st
           maxErrors: level.maxErrors,
         }}
         isAuthenticated={Boolean(session?.user)}
-        userName={session?.user?.name ?? session?.user?.email ?? "Invitado"}
+        userName={session?.user?.name ?? session?.user?.email?.split("@")[0] ?? "Invitado"}
         history={history}
         nextLevelSlug={nextLevelSlug}
       />

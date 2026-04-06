@@ -6,8 +6,8 @@ import { useSession } from "next-auth/react";
 import { updateUserNameAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Check, Settings } from "lucide-react";
+import { User, Check, Settings, ShieldCheck, Mail } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SettingsFormProps {
   user: {
@@ -43,75 +43,92 @@ export function SettingsForm({ user }: SettingsFormProps) {
   }, [user.name]);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_350px]">
-      <div className="space-y-6">
-        <Card className="overflow-hidden rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/50">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 p-8">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg">
-                <User className="size-6" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">Perfil público</CardTitle>
-                <CardDescription>Cómo te ven los demás en el ranking y retos.</CardDescription>
-              </div>
+    <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
+      {/* Primary Configuration Panel */}
+      <div className="space-y-8">
+        <div className="bg-surface-low border border-white/5 rounded-lg p-10 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-1 h-full bg-secondary shadow-[0_0_20px_#c47fff]" />
+          
+          <div className="flex items-center gap-4 mb-12">
+            <div className="size-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
+              <User className="size-6" />
             </div>
-          </CardHeader>
-          <CardContent className="p-8">
-            <form action={action} className="max-w-md space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold tracking-widest text-slate-400 uppercase">Nombre visible</label>
-                <Input 
-                  name="name" 
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Escribe tu nuevo nombre..."
-                  className="h-12 rounded-2xl bg-slate-50 focus-visible:ring-indigo-500"
-                  required
-                />
-                <p className="text-[11px] text-slate-400">Este nombre aparecerá en tus resultados compartidos.</p>
-              </div>
+            <div>
+              <h3 className="text-2xl font-display font-black text-foreground uppercase tracking-tight">Identidad_Pública</h3>
+              <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mt-1 opacity-50">Identificador_Instancia_Global</p>
+            </div>
+          </div>
 
-              <div className="flex items-center gap-4 pt-2">
-                <Button 
-                  type="submit" 
-                  disabled={isPending || (state.ok && newName === user.name)}
-                  className="h-12 gap-2 rounded-2xl px-8 font-bold transition-all shadow-lg active:scale-95"
-                >
-                  {isPending ? "Guardando..." : state.ok ? "Nombre guardado" : "Guardar cambios"}
-                  {state.ok && <Check className="size-4" />}
-                </Button>
-              </div>
+          <form action={action} className="max-w-xl space-y-8">
+            <div className="space-y-3">
+              <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1">Alias_Visible</label>
+              <Input 
+                name="name" 
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Asignar alias..."
+                className="bg-surface-highest/50 border-white/5 focus:border-secondary/50 focus:ring-0 rounded-none h-14 font-sans text-lg transition-all"
+                required
+              />
+              <p className="text-[10px] font-sans text-muted-foreground/60 px-1 italic">
+                Este identificador se transmite a los nodos de ranking global e instancias de desafío.
+              </p>
+            </div>
 
+            <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <Button 
+                type="submit" 
+                disabled={isPending || (state.ok && newName === user.name)}
+                className="h-14 px-12 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-display font-bold uppercase tracking-[0.2em] text-[10px] rounded-none shadow-[0_0_20px_rgba(196,127,255,0.1)] transition-all active:scale-[0.98]"
+              >
+                {isPending ? "SINCRONIZANDO..." : state.ok ? "IDENTIDAD_BLOQUEADA" : "DESPLEGAR_CAMBIOS"}
+                {state.ok && <Check className="size-4 ml-2" />}
+              </Button>
+              
               {state.message && (
-                <div className={`rounded-xl p-3 text-sm font-medium border text-center transition-all ${
-                  state.ok 
-                    ? "bg-emerald-50 border-emerald-100 text-emerald-600" 
-                    : "bg-rose-50 border-rose-100 text-rose-600"
-                }`}>
-                  {state.message}
+                <div className={cn(
+                  "font-mono text-[9px] uppercase tracking-widest animate-in fade-in slide-in-from-left-2",
+                  state.ok ? "text-primary" : "text-destructive"
+                )}>
+                  // {state.message}
                 </div>
               )}
-            </form>
-          </CardContent>
-        </Card>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="rounded-[32px] bg-indigo-600 p-8 text-white shadow-xl shadow-indigo-200/50">
-          <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+      {/* Auxiliary Metadata & Stats */}
+      <div className="space-y-8">
+        <div className="bg-surface-highest p-10 rounded-lg border border-white/5">
+          <div className="size-10 rounded-lg bg-white/5 flex items-center justify-center text-muted-foreground mb-6">
             <Settings className="size-5" />
           </div>
-          <h3 className="text-lg font-bold">Ajustes de cuenta</h3>
-          <p className="mt-2 text-sm leading-relaxed opacity-80">
-            Estamos trabajando en añadir más opciones como cambio de avatar, temas visuales y ajustes de sonido.
+          <h3 className="font-display font-bold text-xs uppercase tracking-[0.3em] text-foreground mb-3">Opciones de Hub del Sistema</h3>
+          <p className="text-sm font-sans text-muted-foreground leading-relaxed">
+            Módulos periféricos para <span className="text-secondary font-bold">Avatares</span>, <span className="text-primary font-bold">Tematización</span> y <span className="text-tertiary font-bold">Feedback Háptico</span> están actualmente en calibración.
           </p>
         </div>
         
-        <Card className="rounded-[32px] border border-slate-100 bg-slate-50/50 p-6">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400">Correo vinculado</h4>
-          <p className="mt-2 text-sm font-medium text-slate-600">{user.email}</p>
-        </Card>
+        <div className="bg-surface-low border border-white/5 rounded-lg p-8 group hover:border-primary/20 transition-all">
+          <div className="flex items-center gap-4 mb-4">
+             <div className="size-8 rounded bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                <Mail className="size-4" />
+             </div>
+             <span className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Canal_Certificado_Comunicación</span>
+          </div>
+          <p className="font-mono text-xs font-bold text-foreground truncate pl-12">{user.email}</p>
+        </div>
+
+        <div className="bg-surface-low border border-white/5 rounded-lg p-8">
+           <div className="flex items-center gap-4 mb-4 text-tertiary opacity-50">
+              <ShieldCheck className="size-4" />
+              <span className="font-display font-bold text-[10px] uppercase tracking-widest">Control_Integridad</span>
+           </div>
+           <p className="text-[10px] font-sans text-muted-foreground leading-relaxed pl-12">
+              Autenticación verificada vía OID/Proxy de Identidad. El estado de la sesión es persistente a través de los nodos locales del navegador.
+           </p>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,8 @@ import { loginUserAction, registerUserAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
-import { Chrome, Check, X } from "lucide-react";
+import { Chrome, Check, X, ShieldCheck, Terminal as TerminalIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const initialState = { ok: false, message: "" };
 
@@ -14,8 +15,11 @@ const initialState = { ok: false, message: "" };
  */
 function ValidationRule({ met, text }: { met: boolean; text: string }) {
   return (
-    <div className={`flex items-center gap-2 text-xs transition-colors ${met ? "text-emerald-600 font-medium" : "text-slate-400"}`}>
-      {met ? <Check className="size-3" /> : <X className="size-3 opacity-50" />}
+    <div className={cn(
+      "flex items-center gap-2 font-mono text-[9px] uppercase tracking-widest transition-all",
+       met ? "text-primary font-bold" : "text-muted-foreground/40"
+    )}>
+      {met ? <Check className="size-3" /> : <TerminalIcon className="size-3 opacity-20" />}
       <span>{text}</span>
     </div>
   );
@@ -35,59 +39,82 @@ export function RegisterForm() {
   const isPasswordValid = rules.length && rules.hasLetter && rules.hasNumber;
 
   return (
-    <form action={action} className="space-y-4">
-      <Input name="name" placeholder="Tu nombre" />
-      <Input name="email" type="email" placeholder="tu@email.com" required />
-      
+    <form action={action} className="space-y-6">
       <div className="space-y-2">
+        <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1">Alias_Usuario</label>
+        <Input 
+          name="name" 
+          placeholder="ej. NeoTypist" 
+          className="bg-surface-highest/50 border-white/5 focus:border-primary/50 focus:ring-0 rounded-none h-12 font-sans transition-all"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1">Canal_Comunicación</label>
+        <Input 
+          name="email" 
+          type="email" 
+          placeholder="piloto@neon-net.io" 
+          required 
+          className="bg-surface-highest/50 border-white/5 focus:border-primary/50 focus:ring-0 rounded-none h-12 font-sans transition-all"
+        />
+      </div>
+      
+      <div className="space-y-3">
+        <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1 flex justify-between">
+          Clave_Seguridad
+          <ShieldCheck className={cn("size-3 transition-colors", isPasswordValid ? "text-primary" : "text-muted-foreground/30")} />
+        </label>
         <Input 
           name="password" 
           type="password" 
-          placeholder="Contraseña segura" 
+          placeholder="••••••••" 
           value={password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           required 
+          className="bg-surface-highest/50 border-white/5 focus:border-primary/50 focus:ring-0 rounded-none h-12 font-mono transition-all"
         />
         
         {/* Indicadores de validación visual */}
-        <div className="flex flex-col gap-1.5 px-1 py-1">
-          <ValidationRule met={rules.length} text="Mínimo 8 caracteres" />
-          <ValidationRule met={rules.hasLetter} text="Al menos una letra" />
-          <ValidationRule met={rules.hasNumber} text="Al menos un número" />
+        <div className="flex flex-col gap-2 p-3 bg-surface-highest/30 border border-white/5">
+          <ValidationRule met={rules.length} text="MÍN_8_CARACTERES" />
+          <ValidationRule met={rules.hasLetter} text="LETRA_REQUERIDA" />
+          <ValidationRule met={rules.hasNumber} text="NÚMERO_REQUERIDO" />
         </div>
       </div>
 
       <Button 
-        className="w-full font-semibold transition-all" 
+        className="w-full h-12 neon-gradient font-display font-bold uppercase tracking-[0.2em] text-[10px] rounded-none shadow-[0_0_20px_rgba(161,250,255,0.1)] hover:shadow-[0_0_30px_rgba(161,250,255,0.25)] transition-all active:scale-[0.98]" 
         type="submit" 
         disabled={isPending || !isPasswordValid}
       >
-        {isPending ? "Creando..." : "Crear cuenta"}
+        {isPending ? "INICIALIZANDO..." : "CREAR IDENTIDAD"}
       </Button>
 
       {state.message ? (
-        <p className={`text-sm text-center p-3 rounded-xl border transition-colors ${
+        <div className={cn(
+          "p-4 border font-mono text-[10px] uppercase tracking-widest",
           state.ok 
-            ? "text-emerald-600 bg-emerald-50 border-emerald-100" 
-            : "text-indigo-600 bg-indigo-50 border-indigo-100"
-        }`}>
+            ? "border-primary/20 bg-primary/5 text-primary" 
+            : "border-destructive/20 bg-destructive/5 text-destructive"
+        )}>
           {state.message}
-        </p>
+        </div>
       ) : null}
       
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>
-        <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-400">O también</span></div>
+      <div className="relative my-10">
+        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
+        <div className="relative flex justify-center text-[10px] font-mono uppercase tracking-[0.4em]"><span className="bg-surface-low px-4 text-muted-foreground/30">Autenticación_Externa</span></div>
       </div>
 
       <Button 
         variant="outline" 
-        className="w-full gap-2 border-slate-200 hover:bg-slate-50 transition-all font-semibold" 
+        className="w-full h-12 gap-3 border-white/5 bg-transparent hover:bg-surface-highest hover:border-primary/30 transition-all font-display font-bold uppercase tracking-widest text-[10px] rounded-none" 
         type="button"
         onClick={() => signIn("google", { callbackUrl: "/progreso" })}
       >
         <Chrome className="size-4" />
-        Continuar con Google
+        Conectar Enlace Google
       </Button>
     </form>
   );
@@ -97,36 +124,61 @@ export function LoginForm() {
   const [state, action, isPending] = useActionState(loginUserAction, initialState);
 
   return (
-    <form action={action} className="space-y-4">
-      <Input name="email" type="email" placeholder="tu@email.com" required />
-      <Input name="password" type="password" placeholder="Tu clave" required />
-      <Button className="w-full font-semibold" type="submit" disabled={isPending}>
-        {isPending ? "Entrando..." : "Entrar"}
+    <form action={action} className="space-y-6">
+      <div className="space-y-2">
+        <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1">Canal_Comunicación</label>
+        <Input 
+          name="email" 
+          type="email" 
+          placeholder="piloto@neon-net.io" 
+          required 
+          className="bg-surface-highest/50 border-white/5 focus:border-secondary/50 focus:ring-0 rounded-none h-12 font-sans transition-all"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground ml-1">Clave_Seguridad</label>
+        <Input 
+          name="password" 
+          type="password" 
+          placeholder="••••••••" 
+          required 
+          className="bg-surface-highest/50 border-white/5 focus:border-secondary/50 focus:ring-0 rounded-none h-12 font-mono transition-all"
+        />
+      </div>
+
+      <Button 
+        className="w-full h-12 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-display font-bold uppercase tracking-[0.2em] text-[10px] rounded-none shadow-[0_0_20px_rgba(196,127,255,0.1)] transition-all active:scale-[0.98]" 
+        type="submit" 
+        disabled={isPending}
+      >
+        {isPending ? "AUTENTICANDO..." : "REANUDAR_ENLACE"}
       </Button>
 
       {state.message ? (
-        <p className={`text-sm text-center p-3 rounded-xl border transition-colors ${
+        <div className={cn(
+          "p-4 border font-mono text-[10px] uppercase tracking-widest",
           state.ok 
-            ? "text-emerald-600 bg-emerald-50 border-emerald-100" 
-            : "text-rose-600 bg-rose-50 border-rose-100"
-        }`}>
+            ? "border-primary/20 bg-primary/5 text-primary" 
+            : "border-destructive/20 bg-destructive/5 text-destructive"
+        )}>
           {state.message}
-        </p>
+        </div>
       ) : null}
 
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>
-        <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-400">O entra con</span></div>
+      <div className="relative my-10">
+        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
+        <div className="relative flex justify-center text-[10px] font-mono uppercase tracking-[0.4em]"><span className="bg-surface-high px-4 text-muted-foreground/30">Autenticación_Externa</span></div>
       </div>
 
       <Button 
         variant="outline" 
-        className="w-full gap-2 border-slate-200 hover:bg-slate-50 transition-all font-semibold" 
+        className="w-full h-12 gap-3 border-white/5 bg-transparent hover:bg-surface-highest hover:border-secondary/30 transition-all font-display font-bold uppercase tracking-widest text-[10px] rounded-none" 
         type="button"
         onClick={() => signIn("google", { callbackUrl: "/progreso" })}
       >
         <Chrome className="size-4" />
-        Google
+        Conectar Enlace Google
       </Button>
     </form>
   );
