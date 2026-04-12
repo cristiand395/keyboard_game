@@ -96,7 +96,7 @@ export function TypingDemo() {
 
             let charClassName = "transition-all duration-75";
             if (typedChar === undefined) {
-              charClassName += " text-white/10";
+              charClassName += " text-foreground/10";
             } else if (typedChar.correct) {
               charClassName += " text-primary";
             } else {

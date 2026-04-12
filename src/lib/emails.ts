@@ -3,7 +3,9 @@ import { env } from "./env";
 import { VerifyEmailTemplate } from "@/components/emails/VerifyEmail";
 import React from "react";
 
-const resend = new Resend(env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(env.RESEND_API_KEY);
+}
 
 export async function sendVerificationEmail(
   email: string,
@@ -14,7 +16,7 @@ export async function sendVerificationEmail(
   const confirmLink = `${baseUrl}/verificar-email?token=${token}`;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: "Keyboard Game <onboarding@resend.dev>", // Cambiar por dominio verificado en Resend
       to: email,
       subject: "Verifica tu cuenta - Keyboard Game",

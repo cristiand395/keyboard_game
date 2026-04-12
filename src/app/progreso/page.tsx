@@ -96,18 +96,13 @@ export default async function ProgressPage() {
                 key={entry.levelSlug}
                 className="group bg-surface-low border border-white/5 rounded-lg p-6 flex flex-col md:flex-row md:items-center justify-between hover:border-primary/30 hover:bg-surface-high transition-all"
               >
-                <div className="flex items-center gap-6 mb-4 md:mb-0">
-                  <div className="size-12 rounded bg-surface-highest flex items-center justify-center font-display font-black text-xs text-secondary-foreground group-hover:text-primary transition-colors">
+                <div className="flex items-center gap-6 mb-4 md:mb-0 w-70 shrink-0">
+                  <div className="size-12 shrink-0 rounded bg-primary/10 border border-primary/20 flex items-center justify-center font-display font-black text-xs text-primary group-hover:bg-primary/20 transition-colors">
                     {String(entry.order).padStart(2, '0')}
                   </div>
-                  <div>
-                    <h4 className="text-xl font-display font-bold text-foreground group-hover:text-primary transition-colors uppercase leading-none mb-1">
-                      {entry.title}
-                    </h4>
-                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-                      ID: {entry.levelSlug}
-                    </p>
-                  </div>
+                  <h4 className="text-xl font-display font-bold text-foreground group-hover:text-primary transition-colors uppercase leading-none">
+                    {entry.title}
+                  </h4>
                 </div>
 
                 <div className="grid grid-cols-3 gap-8 md:gap-16 mr-8">
@@ -116,7 +111,7 @@ export default async function ProgressPage() {
                   <MetricItem label="Rango" value={`${entry.bestStars} ⭐`} color="text-tertiary" />
                 </div>
 
-                <Button asChild variant="outline" className="border-white/10 hover:border-primary hover:text-primary rounded-md h-10 px-6 font-display font-bold uppercase tracking-widest text-[10px]">
+                <Button asChild variant="outline" className="border-primary/20 text-primary bg-transparent hover:bg-primary/10 hover:border-primary/50 rounded-md h-10 px-6 font-display font-bold uppercase tracking-widest text-[10px] transition-all">
                   <Link href={`/retos/${entry.levelSlug}`}>Reiniciar</Link>
                 </Button>
               </div>

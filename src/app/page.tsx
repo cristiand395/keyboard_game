@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Bolt, Terminal as TerminalIcon } from "lucide-react";
 import { getTracksWithLevels } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+
 import { TypingDemo } from "@/components/typing-demo";
 
 export default async function HomePage() {
@@ -52,15 +52,17 @@ export default async function HomePage() {
                 <h2 className="text-xs font-display text-primary font-bold tracking-[0.3em] mb-2 uppercase">Próximos pasos</h2>
                 <p className="text-5xl font-display font-bold text-foreground tracking-tight">Desafíos disponibles</p>
               </div>
-              <div className="flex gap-3">
-                <ArrowButton direction="left" />
-                <ArrowButton direction="right" />
-              </div>
+              <Button asChild variant="outline" size="sm" className="rounded-md border-primary/20 text-primary bg-transparent hover:bg-primary/10 hover:border-primary/50 transition-all">
+                <Link href="/retos" className="flex items-center gap-2">
+                  Ver todos
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
             </div>
           </div>
 
-          {/* Dynamic Challenge Cards */}
-          {tracks.map((track) => (
+          {/* Dynamic Challenge Cards (first 6) */}
+          {tracks.slice(0, 6).map((track) => (
             <div key={track.id} className="md:col-span-4 group cursor-pointer">
               <Link href={`/retos/${track.levels[0].slug}`}>
                 <div className="bg-surface-low p-8 rounded-lg border border-white/5 transition-all duration-500 group-hover:border-primary/40 group-hover:-translate-y-1 relative overflow-hidden h-full flex flex-col shadow-sm">
@@ -95,13 +97,5 @@ export default async function HomePage() {
       </section>
 
     </main>
-  );
-}
-
-function ArrowButton({ direction }: { direction: "left" | "right" }) {
-  return (
-    <Button variant="outline" size="sm" className="rounded-md border-border hover:border-primary hover:text-primary transition-all">
-      <ArrowRight className={cn("size-4", direction === "left" && "rotate-180")} />
-    </Button>
   );
 }

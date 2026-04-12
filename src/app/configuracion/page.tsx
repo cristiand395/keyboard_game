@@ -1,4 +1,7 @@
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 import { getCachedSession } from "@/lib/auth";
 import { SettingsForm } from "@/components/settings-form";
 import { Settings as SettingsIcon, Sliders } from "lucide-react";
@@ -9,6 +12,8 @@ export default async function ConfiguracionPage() {
   if (!session?.user?.id) {
     redirect("/acceder");
   }
+
+  const [dbUser] = await db.select({ avatar: users.avatar }).from(users).where(eq(users.id, session.user.id));
 
   return (
     <main className="grow flex flex-col items-center px-8 py-16 max-w-7xl mx-auto w-full">
@@ -27,11 +32,12 @@ export default async function ConfiguracionPage() {
       </section>
 
       <div className="w-full animate-rise" style={{ animationDelay: "150ms" }}>
-        <SettingsForm 
-          user={{ 
-            name: session.user.name, 
-            email: session.user.email 
-          }} 
+        <SettingsForm
+          user={{
+            name: session.user.name,
+            email: session.user.email,
+            avatar: dbUser?.avatar,
+          }}
         />
       </div>
 

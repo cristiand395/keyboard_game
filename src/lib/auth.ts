@@ -74,15 +74,19 @@ export const authConfig = {
     async jwt({ token, user, trigger, session }) {
       if (user?.id) {
         token.userId = user.id;
+        const [dbUser] = await db.select({ avatar: users.avatar }).from(users).where(eq(users.id, user.id));
+        token.avatar = dbUser?.avatar ?? "core";
       }
-      if (trigger === "update" && session?.name) {
-        token.name = session.name;
+      if (trigger === "update") {
+        if (session?.name) token.name = session.name;
+        if (session?.avatar !== undefined) token.avatar = session.avatar;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.userId) {
         session.user.id = String(token.userId);
+        session.user.avatar = token.avatar;
       }
       return session;
     },

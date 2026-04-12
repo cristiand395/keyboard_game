@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={cn(spaceGrotesk.variable, manrope.variable, jetBrainsMono.variable)} data-scroll-behavior="smooth">
+    <html lang="es" className={cn(spaceGrotesk.variable, manrope.variable, jetBrainsMono.variable)} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="antialiased min-h-screen">
         <Providers>
           <Header />

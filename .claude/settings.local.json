@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(npx next:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node -e \"console.log\\(process.env.DATABASE_URL ? ''DATABASE_URL is set'' : ''DATABASE_URL NOT SET''\\)\")",
+      "Bash(node -e \"const { Pool } = require\\(''pg''\\); const pool = new Pool\\({ connectionString: ''postgresql://postgres:@host.docker.internal:5432/keyboard_game'' }\\); pool.query\\(\"\"SELECT column_name FROM information_schema.columns WHERE table_name = ''tracks'' ORDER BY ordinal_position\"\"\\).then\\(r => { console.log\\(''Columns:'', r.rows.map\\(r => r.column_name\\).join\\('', ''\\)\\); pool.end\\(\\); }\\).catch\\(e => { console.error\\(''Error:'', e.message\\); pool.end\\(\\); }\\);\")",
+      "Bash(node -e \":*)",
+      "Bash(npx shadcn@latest add dropdown-menu)"
+    ]
+  }
+}

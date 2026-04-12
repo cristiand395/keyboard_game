@@ -274,3 +274,10 @@ export async function updateUserNameAction(
 
   return { ok: true, message: "Nombre actualizado correctamente." };
 }
+
+export async function updateUserAvatarAction(avatarId: string): Promise<void> {
+  const session = await auth();
+  if (!session?.user?.id) return;
+  await db.update(users).set({ avatar: avatarId }).where(eq(users.id, session.user.id));
+  revalidatePath("/configuracion");
+}

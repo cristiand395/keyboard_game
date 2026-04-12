@@ -153,21 +153,21 @@ export function TypingGame({
         <div className="w-full max-w-5xl relative group animate-rise" style={{ animationDelay: "100ms" }}>
            <div 
              className={cn(
-               "bg-surface-lowest border-b-2 border-primary/10 p-12 rounded-lg backdrop-blur-md transition-all duration-300 relative overflow-hidden shadow-sm",
+               "bg-surface-lowest border-b-2 border-primary/10 p-4 sm:p-8 md:p-12 rounded-lg backdrop-blur-md transition-all duration-300 relative shadow-sm",
                !isFocused && !finishedResult && "opacity-40 grayscale blur-[2px]",
                isFocused && "border-primary/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
              )}
              onClick={() => inputRef.current?.focus()}
            >
              {/* Character Stream */}
-             <div className="font-mono text-3xl md:text-5xl leading-relaxed tracking-normal select-none relative z-10">
+             <div className="font-mono text-lg sm:text-2xl md:text-4xl lg:text-5xl leading-relaxed tracking-normal select-none relative z-10 wrap-break-word">
                 {targetText.split("").map((char, index) => {
                   const typedChar = typedText[index];
                   const isActive = index === typedText.length && !finishedResult;
                   
                   let charClassName = "transition-all duration-75";
                   if (typedChar === undefined) {
-                    charClassName += " text-white/10";
+                    charClassName += " text-foreground/10";
                   } else if (typedChar === char) {
                     charClassName += " text-primary";
                   } else {
@@ -276,11 +276,11 @@ export function TypingGame({
                       Volver a intentar
                     </Button>
                     {nextLevelSlug && finishedResult.passed && (
-                      <Button asChild className="h-14 px-10 font-display font-bold uppercase tracking-widest text-xs rounded-md bg-surface-highest hover:bg-surface-high transition-all active:scale-95 border border-white/10">
+                      <Button asChild className="h-14 px-10 font-display font-bold uppercase tracking-widest text-xs rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-all active:scale-95 border border-primary/20">
                         <Link href={`/retos/${nextLevelSlug}`}>Siguiente módulo</Link>
                       </Button>
                     )}
-                    <Button variant="ghost" asChild className="h-14 font-display font-bold uppercase tracking-widest text-xs text-muted-foreground hover:text-foreground">
+                    <Button variant="ghost" asChild className="h-14 px-10 rounded-md font-display font-bold uppercase tracking-widest text-xs text-muted-foreground hover:text-foreground">
                       <Link href="/retos">Volver al panel</Link>
                     </Button>
                  </div>
@@ -296,7 +296,7 @@ export function TypingGame({
                     <div className="space-y-6">
                        {history.length > 0 ? history.slice(0, 3).map((h, i) => (
                          <div key={i} className="flex justify-between items-center bg-surface-low/50 p-4 rounded border border-white/5 transition-colors hover:border-primary/20">
-                            <div className="font-mono text-[10px] text-muted-foreground uppercase">Sesión {h.id.slice(0, 4)}</div>
+                            <div className="font-mono text-[10px] text-muted-foreground uppercase">Intento {i + 1}</div>
                             <div className="text-right">
                                <p className="font-display font-bold text-foreground">{h.wpm} PPM</p>
                                <p className="text-[10px] font-mono text-secondary px-1 uppercase">{formatPercentage(h.accuracy)} Precisión</p>

@@ -65,7 +65,7 @@ export default async function PlayPage() {
                     
                     <div className="flex items-center justify-between mb-8">
                        <Badge className="font-mono text-primary bg-primary/10 border border-primary/20 tracking-widest leading-none uppercase">
-                         Instancia {String(level.order).padStart(2, '0')}
+                         Instancia {String(index + 1).padStart(2, '0')}
                        </Badge>
                        {isUnlocked && <Play className="size-4 text-primary animate-pulse" />}
                     </div>
