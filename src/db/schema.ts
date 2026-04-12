@@ -71,13 +71,21 @@ export const verificationTokens = pgTable(
   }),
 );
 
-export const tracks = pgTable("tracks", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  slug: varchar("slug", { length: 120 }).notNull().unique(),
-  title: varchar("title", { length: 120 }).notNull(),
-  description: text("description").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const tracks = pgTable(
+  "tracks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    slug: varchar("slug", { length: 120 }).notNull().unique(),
+    title: varchar("title", { length: 120 }).notNull(),
+    description: text("description").notNull(),
+    order: integer("order").notNull(),
+    isPublished: boolean("is_published").default(true).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orderIndex: uniqueIndex("tracks_order_unique").on(table.order),
+  }),
+);
 
 export const levels = pgTable(
   "levels",

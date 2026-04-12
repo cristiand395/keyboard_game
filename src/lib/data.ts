@@ -2,7 +2,7 @@ import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import { cache } from "react";
 import { db } from "@/db";
 import { attempts, levels, levelTargets, tracks, userLevelProgress } from "@/db/schema";
-import { tutorials } from "@/lib/content";
+import { tutorials } from "@/lib/content/index";
 
 export const getTracksWithLevels = cache(async () => {
   const rows = await db
@@ -26,8 +26,8 @@ export const getTracksWithLevels = cache(async () => {
     .from(tracks)
     .innerJoin(levels, eq(levels.trackId, tracks.id))
     .innerJoin(levelTargets, eq(levelTargets.levelId, levels.id))
-    .where(eq(levels.isPublished, true))
-    .orderBy(asc(tracks.createdAt), asc(levels.order));
+    .where(and(eq(tracks.isPublished, true), eq(levels.isPublished, true)))
+    .orderBy(asc(tracks.order), asc(levels.order));
 
   return rows.reduce<
     Array<{

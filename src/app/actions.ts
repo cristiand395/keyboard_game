@@ -197,10 +197,9 @@ export async function saveAttemptAction(input: SaveAttemptInput) {
     });
 
   if (result.passed) {
-    const levelSlugs = flatLevels
-      .filter((level) => level.order >= 1)
-      .map((level) => level.slug);
-    const unlock = resolveUnlock(levelSlugs, currentLevel.slug);
+    const currentTrack = trackList.find((t) => t.levels.some((l) => l.slug === input.levelSlug));
+    const trackLevelSlugs = currentTrack?.levels.map((l) => l.slug) ?? [];
+    const unlock = resolveUnlock(trackLevelSlugs, currentLevel.slug);
 
     if (unlock.unlockedLevelSlug) {
       const [nextLevel] = await db.select().from(levels).where(eq(levels.slug, unlock.unlockedLevelSlug));

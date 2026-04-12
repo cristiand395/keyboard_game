@@ -1,25 +1,4 @@
-export type TutorialPage = {
-  slug: string;
-  title: string;
-  eyebrow: string;
-  summary: string;
-  tips: string[];
-  drills: string[];
-};
-
-export type LevelSeed = {
-  slug: string;
-  trackSlug: string;
-  order: number;
-  title: string;
-  description: string;
-  body: string;
-  minAccuracy: number;
-  bronzeWpm: number;
-  silverWpm: number;
-  goldWpm: number;
-  maxErrors: number;
-};
+import type { TutorialPage } from "./index";
 
 export const tutorials: TutorialPage[] = [
   {
@@ -71,59 +50,3 @@ export const tutorials: TutorialPage[] = [
     ],
   },
 ];
-
-export const levelSeeds: LevelSeed[] = [
-  {
-    slug: "fila-guia-1",
-    trackSlug: "fundamentos",
-    order: 1,
-    title: "Fila guia I",
-    description: "Activa la memoria base con letras centrales y ritmo uniforme.",
-    body: "asdf jklñ asdf jklñ asa jkl asa jkl",
-    minAccuracy: 92,
-    bronzeWpm: 18,
-    silverWpm: 28,
-    goldWpm: 38,
-    maxErrors: 8,
-  },
-  {
-    slug: "palabras-cortas",
-    trackSlug: "fundamentos",
-    order: 2,
-    title: "Palabras cortas",
-    description: "Sube el ritmo manteniendo palabras faciles y controladas.",
-    body: "casa sala lado dedo mesa dato rosa sopa luna",
-    minAccuracy: 93,
-    bronzeWpm: 20,
-    silverWpm: 30,
-    goldWpm: 40,
-    maxErrors: 7,
-  },
-  {
-    slug: "frases-fluidas",
-    trackSlug: "fundamentos",
-    order: 3,
-    title: "Frases fluidas",
-    description: "Conecta frases sencillas sin romper postura ni precision.",
-    body: "la practica diaria mejora el ritmo y hace mas suave cada pulsacion",
-    minAccuracy: 94,
-    bronzeWpm: 22,
-    silverWpm: 32,
-    goldWpm: 44,
-    maxErrors: 6,
-  },
-  {
-    slug: "signos-y-espacios",
-    trackSlug: "fundamentos",
-    order: 4,
-    title: "Signos y espacios",
-    description: "Domina comas, puntos y pausas sin perder el compas.",
-    body: "respira, escribe con calma, corrige poco y sigue el ritmo final.",
-    minAccuracy: 95,
-    bronzeWpm: 24,
-    silverWpm: 34,
-    goldWpm: 46,
-    maxErrors: 6,
-  },
-];
-

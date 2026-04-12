@@ -13,6 +13,8 @@ async function main() {
         set: {
           title: trackSeed.title,
           description: trackSeed.description,
+          order: trackSeed.order,
+          isPublished: trackSeed.isPublished,
         },
       });
   }
